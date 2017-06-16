@@ -8,8 +8,8 @@ var LayoutType = {
 function frame(x, y, width, height) {
   return {
     top: y + '%',
-    right: (100 - width) + '%',
-    bottom: (100 - height) + '%',
+    right: (100 - width - x) + '%',
+    bottom: (100 - height - y) + '%',
     left: x + '%',
   }
 }
