@@ -112,13 +112,6 @@ VideoFrameManager.prototype.loadVideoOnFrame = function(frame, formName) {
 };
 
 
-/** Static function for removing all child elements from the given DOM element. */
-function clearElementContents(element) {
-  while (element.hasChildNodes()) {
-    element.removeChild(element.lastChild);
-  }
-}
-
 /** Static function to update the properties of the given DOM element using the given frame. */
 function setPlayerFrame(element, frame) {
   element.style.top = frame.top;
