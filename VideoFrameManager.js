@@ -104,6 +104,7 @@ VideoFrameManager.prototype.createFrame = function() {
   return frame;
 }
 
+/** Sets the content of a frame with that which is interpretted from the form with the given name. */
 VideoFrameManager.prototype.loadVideoOnFrame = function(frame, formName) {
   var iframe = document.createElement('iframe');
   iframe.src = 'http://www.youtube.com/embed/' + document.forms[formName]['video'].value + '?rel=0';
