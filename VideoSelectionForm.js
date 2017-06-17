@@ -1,15 +1,11 @@
-function VideoSelectionForm(onSubmit) {
-  this.onSubmit = onSubmit;
-  lazy(this, 'element', () => this.buildDomElement());
-}
+function VideoSelectionForm(id, onSubmit) {
 
-VideoSelectionForm.prototype.buildDomElement = function() {
   let form = document.createElement('form');
   form.name = 'form' + id;
   form.method = 'post';
   form.onsubmit = () => {
     try {
-      this.onSubmit();
+      onSubmit();
     } catch (error) {
       console.log(error);
     }
@@ -27,5 +23,6 @@ VideoSelectionForm.prototype.buildDomElement = function() {
   
   form.appendChild(textInput);
   form.appendChild(submitInput);
-  return form;
-};
+  
+  this.element = form;
+}
