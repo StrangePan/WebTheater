@@ -7,13 +7,13 @@ button {
   padding: 16px;
   margin: 16px;
 }
-.video {
+.video-frame {
   display: block;
   position: absolute;
   margin: 0;
   padding: 0;
 }
-.video > iframe {
+.video-frame > iframe {
   display: block;
   padding: 0;
   margin: 0;

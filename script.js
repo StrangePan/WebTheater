@@ -27,3 +27,11 @@ function clearElementContents(element) {
     element.removeChild(element.lastChild);
   }
 }
+
+/** Static function. Sets the given element's child nodes. Removes any existing children. */
+function setElementContents(element) {
+  clearElementContents(element);
+  for (let i = 1; i < arguments.length; i++) {
+    element.appendChild(arguments[i]);
+  }
+}

@@ -11,11 +11,11 @@ VideoFrameManager.prototype.init = function() {
 
 /** Replaces the contents of the container with buttons for layout options. */
 VideoFrameManager.prototype.showButtons = function() {
-  
-clearElementContents(this.getContainer());
-  this.getContainer().appendChild(this.createButtonForLayout(VideoLayouts[LayoutType.FULLSCREEN]));
-  this.getContainer().appendChild(this.createButtonForLayout(VideoLayouts[LayoutType.VERTICAL_SPLIT]));
-  this.getContainer().appendChild(this.createButtonForLayout(VideoLayouts[LayoutType.FOUR_CORNERS]));
+  setElementContents(
+    this.getContainer(),
+    this.createButtonForLayout(VideoLayouts[LayoutType.FULLSCREEN]),
+    this.createButtonForLayout(VideoLayouts[LayoutType.VERTICAL_SPLIT]),
+    this.createButtonForLayout(VideoLayouts[LayoutType.FOUR_CORNERS]));
 };
 
 /** Gets the DOM element that is the container for all of the video frames. */
@@ -34,88 +34,41 @@ VideoFrameManager.prototype.createButtonForLayout = function(layout) {
 /** Update video frames to match the given layout. */
 VideoFrameManager.prototype.loadLayout = function(layout) {
   clearElementContents(this.getContainer());
-  this.setNumberOfPlayers(layout.frames.length);
+  this.setNumberOfPlayerFrames(layout.frames.length);
   for (let i = 0; i < layout.frames.length; i++) {
-    setPlayerFrame(this.playerFrames[i], layout.frames[i]);
+    this.playerFrames[i].setLayout(layout.frames[i]);
   }
 };
 
 /** Create/destroy video frames until the number of frames match the given number. */
-VideoFrameManager.prototype.setNumberOfPlayers = function(numPlayers) {
+VideoFrameManager.prototype.setNumberOfPlayerFrames = function(numPlayers) {
   if (numPlayers < 0 || numPlayers > 10) {
     return;
   }
   while (this.playerFrames.length < numPlayers) {
-    this.pushPlayer();
+    this.pushPlayerFrame();
   }
   while (this.playerFrames.length > numPlayers) {
-    this.popPlayer();
+    this.popPlayerFrame();
   }
 };
 
 /** Create a new video player and add it to the DOM tree and the playerFrames array. */
-VideoFrameManager.prototype.pushPlayer = function() {
-  let player = this.createFrame();
-  this.getContainer().appendChild(player);
-  this.playerFrames.push(player);
-  return player;
+VideoFrameManager.prototype.pushPlayerFrame = function() {
+  let playerFrame = this.createPlayerFrame();
+  this.getContainer().appendChild(playerFrame.element);
+  this.playerFrames.push(playerFrame);
+  return playerFrame;
 };
 
 /** Remove the last video player from the DOM tree and the playerFrames array. */
-VideoFrameManager.prototype.popPlayer = function() {
-  let player = this.playerFrames.pop();
-  this.getContainer().removeChild(player);
-  return player;
+VideoFrameManager.prototype.popPlayerFrame = function() {
+  let playerFrame = this.playerFrames.pop();
+  this.getContainer().removeChild(playerFrame.element);
+  return playerFrame;
 };
 
 /** Create a new video frame. */
-VideoFrameManager.prototype.createFrame = function() {
-  let id = this.playerFrames.length;
-  
-  let frame = document.createElement('div');
-  frame.classList.add('video');
-  frame.id = id;
-  
-  let form = document.createElement('form');
-  form.name = 'form' + id;
-  form.method = 'post';
-  form.onsubmit = () => {
-    this.loadVideoOnFrame(frame, form.name);
-    return false;
-  };
-  
-  let textInput = document.createElement('input');
-  textInput.type = 'text';
-  textInput.name = 'video';
-  textInput.placeholder = 'Video ID';
-  
-  let submitInput = document.createElement('input');
-  submitInput.type = 'submit';
-  submitInput.value = 'Go';
-  
-  frame.appendChild(form);
-  form.appendChild(textInput);
-  form.appendChild(submitInput);
-
-  return frame;
+VideoFrameManager.prototype.createPlayerFrame = function() {
+  return new VideoFrame(this.playerFrames.lenth);
 };
-
-/** Sets the content of a frame with that which is interpretted from the form with the given name. */
-VideoFrameManager.prototype.loadVideoOnFrame = function(frame, formName) {
-  let iframe = document.createElement('iframe');
-  iframe.src = 'http://www.youtube.com/embed/' + document.forms[formName]['video'].value + '?rel=0';
-  iframe.frameBorder = '0';
-  iframe.setAttribute('allowfullscreen', '');
-
-  clearElementContents(frame);
-  frame.appendChild(iframe);
-};
-
-
-/** Static function to update the properties of the given DOM element using the given frame. */
-function setPlayerFrame(element, frame) {
-  element.style.top = frame.top;
-  element.style.right = frame.right;
-  element.style.bottom = frame.bottom;
-  element.style.left = frame.left;
-}
