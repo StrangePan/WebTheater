@@ -4,9 +4,36 @@ var Param = {
 
 var urlParameters;
 var players = [];
+var container;
+
+function initVideoFrameManager() {
+  showButtons();
+}
+
+function showButtons() {
+  clearElementContents(getContainer());
+  getContainer().appendChild(createButtonForLayout(VideoLayouts[LayoutType.FULLSCREEN]));
+  getContainer().appendChild(createButtonForLayout(VideoLayouts[LayoutType.VERTICAL_SPLIT]));
+  getContainer().appendChild(createButtonForLayout(VideoLayouts[LayoutType.FOUR_CORNERS]));
+}
 
 function getContainer() {
-  return document.body;
+  return container == null
+      ? container = document.getElementById('video-frame-container')
+      : container;
+}
+
+function clearElementContents(element) {
+  while (element.hasChildNodes()) {
+    element.removeChild(element.lastChild);
+  }
+}
+
+function createButtonForLayout(layout) {
+  var button = document.createElement('button');
+  button.onclick = function(){loadLayout(layout);};
+  button.textContent = layout.name;
+  return button;
 }
 
 /** Parses the URL parameters and stores the results as a key/value pair in urlParameters. */
@@ -25,11 +52,11 @@ function updateVideoLayout() {
   loadLayout(VideoLayouts[layoutType]);
 }
 
-function loadLayout(layoutType) {
-  var layout = VideoLayouts[layoutType];
-  setNumberOfPlayers(layout.length);
-  for (var i = 0; i < layout.length; i++) {
-    setPlayerFrame(players[i], layout[i]);
+function loadLayout(layout) {
+  clearElementContents(getContainer());
+  setNumberOfPlayers(layout.frames.length);
+  for (var i = 0; i < layout.frames.length; i++) {
+    setPlayerFrame(players[i], layout.frames[i]);
   }
 }
 
@@ -103,11 +130,8 @@ function insertVid(formId) {
   iframe.frameBorder = '0';
   iframe.setAttribute('allowfullscreen', '');
 
-  while (player.hasChildNodes()) {
-    player.removeChild(player.lastChild);
-  }
+  clearElementContents(player);
   player.appendChild(iframe);
   
   return false;
 }
-

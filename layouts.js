@@ -14,20 +14,29 @@ function frame(x, y, width, height) {
   }
 }
 
-var VideoLayouts = {};
+var VideoLayouts = [];
 
-VideoLayouts[LayoutType.FULLSCREEN] = [
-  frame(0, 0, 100, 100)
-];
+VideoLayouts[LayoutType.FULLSCREEN] = {
+  name: "1 Video",
+  frames: [
+    frame(0, 0, 100, 100)
+  ]
+};
 
-VideoLayouts[LayoutType.VERTICAL_SPLIT] = [
-  frame(0, 0, 50, 100),
-  frame(50, 0, 50, 100)
-];
+VideoLayouts[LayoutType.VERTICAL_SPLIT] = {
+  name: "2 Videos",
+  frames: [
+    frame(0, 0, 50, 100),
+    frame(50, 0, 50, 100)
+  ]
+};
 
-VideoLayouts[LayoutType.FOUR_CORNERS] = [
-  frame(0, 0, 50, 50),
-  frame(50, 0, 50, 50),
-  frame(0, 50, 50, 50),
-  frame(50, 50, 50, 50)
-];
+VideoLayouts[LayoutType.FOUR_CORNERS] = {
+  name: "4 Videos",
+  frames: [
+    frame(0, 0, 50, 50),
+    frame(50, 0, 50, 50),
+    frame(0, 50, 50, 50),
+    frame(50, 50, 50, 50)
+  ]
+};

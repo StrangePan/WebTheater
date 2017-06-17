@@ -4,30 +4,15 @@
     <link rel="stylesheet" type="text/css" href="styles.css" />
     <script type="text/javascript" src="layouts.js"></script>
     <script type="text/javascript" src="script.js"></script>
-    <script type="text/javascript">
-      function destroyButtons() {
-        var buttons = document.getElementsByTagName('button');
-        while (buttons.length > 0) {
-          buttons[0].parentNode.removeChild(buttons[0]);
-        }
-      }
-      function oneVid() {
-        destroyButtons();
-        loadLayout(LayoutType.FULLSCREEN);
-      }
-      function twoVids() {
-        destroyButtons();
-        loadLayout(LayoutType.VERTICAL_SPLIT);
-      }
-      function fourVids() {
-        destroyButtons();
-        loadLayout(LayoutType.FOUR_CORNERS);
-      }
-    </script>
   </head>
   <body>
-    <button onclick="oneVid();">1 Video</button>
-    <button onclick="twoVids();">2 Videos</button>
-    <button onclick="fourVids();">4 Videos</button>
+    <div id="video-frame-container">
+      <div class="error-message">
+        <p>Sorry, this feature requires that JavaScript be enabled in order to run.</p>
+      </div>
+    </div>
+    <script type="text/javascript">
+      initVideoFrameManager();
+    </script>
   </body>
 </html>
