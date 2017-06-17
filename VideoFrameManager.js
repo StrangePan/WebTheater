@@ -1,6 +1,6 @@
 function VideoFrameManager(containerId) {
   this.containerId = containerId;
-  this.players = [];
+  this.playerFrames = [];
 }
 
 /** Initializes the video frame manager. */
@@ -39,7 +39,7 @@ VideoFrameManager.prototype.loadLayout = function(layout) {
   clearElementContents(this.getContainer());
   this.setNumberOfPlayers(layout.frames.length);
   for (var i = 0; i < layout.frames.length; i++) {
-    setPlayerFrame(this.players[i], layout.frames[i]);
+    setPlayerFrame(this.playerFrames[i], layout.frames[i]);
   }
 }
 
@@ -48,25 +48,25 @@ VideoFrameManager.prototype.setNumberOfPlayers = function(numPlayers) {
   if (numPlayers < 0 || numPlayers > 10) {
     return;
   }
-  while (this.players.length < numPlayers) {
+  while (this.playerFrames.length < numPlayers) {
     this.pushPlayer();
   }
-  while (this.players.length > numPlayers) {
+  while (this.playerFrames.length > numPlayers) {
     this.popPlayer();
   }
 }
 
-/** Create a new video player and add it to the DOM tree and the players array. */
+/** Create a new video player and add it to the DOM tree and the playerFrames array. */
 VideoFrameManager.prototype.pushPlayer = function() {
   var player = this.createFrame();
   this.getContainer().appendChild(player);
-  this.players.push(player);
+  this.playerFrames.push(player);
   return player;
 }
 
-/** Remove the last video player from the DOM tree and the players array. */
+/** Remove the last video player from the DOM tree and the playerFrames array. */
 VideoFrameManager.prototype.popPlayer = function() {
-  var player = this.players.pop();
+  var player = this.playerFrames.pop();
   this.getContainer().removeChild(player);
   return player;
 }
@@ -74,7 +74,7 @@ VideoFrameManager.prototype.popPlayer = function() {
 /** Create a new video frame. */
 VideoFrameManager.prototype.createFrame = function() {
   var videoManager = this;
-  var id = this.players.length;
+  var id = this.playerFrames.length;
   
   var frame = document.createElement('div');
   frame.classList.add('video');
