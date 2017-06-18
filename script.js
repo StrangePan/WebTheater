@@ -6,7 +6,7 @@ function UrlParam(key, value) {
 
 /** Formats the key/value pair for writing to URL. */
 UrlParam.prototype.toString = function() {
-  return this.value
+  return this.value != null
       ? `${this.key}=${this.value}`
       : `${this.key}`;
 };
@@ -17,6 +17,9 @@ function parseUrlParameters(urlParameters) {
   urlParameters = urlParameters.split('&');
   for (let i = 0; i < urlParameters.length; i++) {
     let pair = urlParameters[i].split('=');
+    if (pair[0].length == 0) {
+      continue;
+    }
     parameters.push(new UrlParam(pair[0], pair[1]));
     parameters[pair[0]] = pair[1];
   }
@@ -39,7 +42,7 @@ function areParamsEqual(p1, p2) {
     return false;
   }
   for (let i = 0; i < p1.length; i++) {
-    if (p2[p1[i].key].value != p1[i].value) {
+    if (p1[i].value != p2[p1[i].key]) {
       return false;
     }
   }

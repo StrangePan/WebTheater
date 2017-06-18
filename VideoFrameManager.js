@@ -18,6 +18,7 @@ VideoFrameManager.prototype.init = function() {
       this.showLayoutInUrl();
     }
   });
+  this.onStateChange = () => this.pushStateToHistory();
 
   this.showLayoutInUrl();
 };
@@ -31,11 +32,17 @@ VideoFrameManager.prototype.getContainer = function() {
 /** Replaces the contents of the container with buttons for layout options. */
 VideoFrameManager.prototype.showLayoutSelection = function() {
   this.layoutType = null;
+  while (this.frames.length) {
+    this.popFrame();
+  }
   setElementContents(
       this.getContainer(),
       this.createLayoutSelectionButton(LayoutType.FULLSCREEN),
       this.createLayoutSelectionButton(LayoutType.VERTICAL_SPLIT),
       this.createLayoutSelectionButton(LayoutType.FOUR_CORNERS));
+  if (this.onStateChange) {
+    this.onStateChange();
+  }
 };
 
 /** Update video frames to match the given layout. Optional array of URL params. */
@@ -59,20 +66,25 @@ VideoFrameManager.prototype.showLayout = function(layoutType, params) {
       this.frames[i].setLayout(layout.frames[i]);
     }
   }
+  if (this.onStateChange) {
+    this.onStateChange();
+  }
 };
 
 /** Create a new video player and add it to the DOM tree and the playerFrames array. */
 VideoFrameManager.prototype.pushFrame = function(params) {
   let frame = this.createFrame(this.frames.length, params);
   this.getContainer().appendChild(frame.element);
+  frame.onStateChange = this.onStateChange;
   this.frames.push(frame);
 };
 
 /** Remove the last video player from the DOM tree and the playerFrames array. */
 VideoFrameManager.prototype.popFrame = function() {
-  let playerFrame = this.frames.pop();
-  this.getContainer().removeChild(playerFrame.element);
-  return playerFrame;
+  let frame = this.frames.pop();
+  frame.onStateChange = null;
+  this.getContainer().removeChild(frame.element);
+  return frame;
 };
 
 
@@ -114,13 +126,16 @@ VideoFrameManager.prototype.showLayoutFromUrlParams = function(params) {
  * Build URL params for the current state and push to the browser's history.
  * Returns true on success or false if nothing was pushed to the browser history.
  */
-VideoFrameManager.prototype.pushStateToUrl = function() {
+VideoFrameManager.prototype.pushStateToHistory = function() {
   let curParams = parseUrlParameters(window.location.search.substr(1));
   let newParams = this.buildUrlParams();
   if (areParamsEqual(curParams, newParams)) {
     return false;
   }
-  let newUrl = window.location.href.replace(window.location.search, assembleUrlParameters(newParams));
+  let newUrl = assembleUrlParameters(newParams);
+  if (window.location.search.length > 0) {
+    newUrl = window.location.href.replace(window.location.search, newUrl);
+  }
   history.pushState(newParams, null, newUrl);
   return true;
 };
@@ -132,7 +147,9 @@ VideoFrameManager.prototype.buildUrlParams = function() {
   if (this.layoutType == null) {
     return params;
   }
-  params.push(new UrlParam(VideoFrameManager.KEY_LAYOUT_TYPE, this.layoutType));
+  let param = new UrlParam(VideoFrameManager.KEY_LAYOUT_TYPE, this.layoutType)
+  params.push(param);
+  params[param.key] = param.value;
 
   for (let i = 0; i < this.frames.length; i++) {
     let frameParams = this.frames[i].buildUrlParams();

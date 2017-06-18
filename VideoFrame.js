@@ -6,6 +6,7 @@ function VideoFrame(id, params) {
   this.element = frame;
   this.id = id;
   this.content = null;
+  this.onStateChange = null;
   this.showContentFromUrlParams(params);
 }
 
@@ -42,7 +43,7 @@ VideoFrame.prototype.showYouTubeVideo = function(inputString) {
  * Returns a non-null array that may be empty.
  */
 VideoFrame.prototype.buildUrlParams = function() {
-  if (this.content instanceof VideoFrameManager) {
+  if (this.content instanceof YouTubeVideo) {
     return [VideoFrame.VIDEO_TYPE_YOUTUBE, ...this.content.buildUrlParams()];
   }
   return [];
@@ -74,6 +75,10 @@ VideoFrame.prototype.showContentFromUrlParams = function(params) {
 VideoFrame.prototype.setContent = function(content) {
   this.content = content;
   setElementContents(this.element, content.element);
+  content.onStateChange = this.onStateChange;
+  if (this.onStateChange) {
+    this.onStateChange();
+  }
 };
 
 /** Sets this frame's properties based on the properties of the given layout object. */
