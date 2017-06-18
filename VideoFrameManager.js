@@ -10,7 +10,16 @@ VideoFrameManager.KEY_PREFIX_FRAME = 'v';
 
 /** Initializes the video frame manager. */
 VideoFrameManager.prototype.init = function() {
-  this.showLayoutSelection();
+  window.addEventListener('popstate', e => {
+    var params = e.state;
+    if (params) {
+      this.showLayoutFromUrlParams(params);
+    } else {
+      this.showLayoutInUrl();
+    }
+  });
+
+  this.showLayoutInUrl();
 };
 
 /** Gets the DOM element that is the container for all of the video frames. */
@@ -80,6 +89,14 @@ VideoFrameManager.prototype.createFrame = function(id, params) {
 };
 
 
+VideoFrameManager.prototype.showLayoutInUrl = function() {
+  this.showLayoutFromUrlParams(parseUrlParameters(window.location.search.substr(1)));
+};
+
+/**
+ * Attempts to show the layout defined by the given params. Shows the layout selection
+ * If unable to use the given params.
+ */
 VideoFrameManager.prototype.showLayoutFromUrlParams = function(params) {
   if (!params || !params.length) {
     this.showLayoutSelection();
@@ -91,6 +108,21 @@ VideoFrameManager.prototype.showLayoutFromUrlParams = function(params) {
   } else {
     this.showLayout(layoutType, params);
   }
+};
+
+/**
+ * Build URL params for the current state and push to the browser's history.
+ * Returns true on success or false if nothing was pushed to the browser history.
+ */
+VideoFrameManager.prototype.pushStateToUrl = function() {
+  let curParams = parseUrlParameters(window.location.search.substr(1));
+  let newParams = this.buildUrlParams();
+  if (areParamsEqual(curParams, newParams)) {
+    return false;
+  }
+  let newUrl = window.location.href.replace(window.location.search, assembleUrlParameters(newParams));
+  history.pushState(newParams, null, newUrl);
+  return true;
 };
 
 /** Create an array of parameters to write to the browser URL. */
@@ -107,14 +139,16 @@ VideoFrameManager.prototype.buildUrlParams = function() {
     if (!frameParams || !frameParams.length) {
       continue;
     }
-    params.push(new UrlParam(`${VideoFrameManager.KEY_PREFIX_FRAME}${i}`, frameParams.join(',')));
+    let param = new UrlParam(`${VideoFrameManager.KEY_PREFIX_FRAME}${i}`, frameParams.join(','))
+    params.push(param);
+    params[param.key] = param.value;
   }
   
   return params;
-}
+};
 
 VideoFrameManager.prepareFrameUrlParams = function(frameId, params) {
   let frameParams = params && params[`${VideoFrameManager.KEY_PREFIX_FRAME}${frameId}`];
-  return frameParams && frameParams.value.split(',');
-}
+  return frameParams && frameParams.split(',');
+};
 

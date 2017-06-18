@@ -1,5 +1,5 @@
 function LayoutType(value) {
-  switch (value) {
+  switch (Number(value)) {
     case LayoutType.FULLSCREEN:
       return LayoutType.FULLSCREEN;
     case LayoutType.VERTICAL_SPLIT:

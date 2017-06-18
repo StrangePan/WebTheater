@@ -12,12 +12,12 @@ UrlParam.prototype.toString = function() {
 };
 
 /** Static function that parses the URL parameters and returns the result as a key/value pair. */
-function parseUrlParameters() {
+function parseUrlParameters(urlParameters) {
   let parameters = [];
-  let urlParameters = window.location.search.substring(1).split("&");
+  urlParameters = urlParameters.split('&');
   for (let i = 0; i < urlParameters.length; i++) {
     let pair = urlParameters[i].split('=');
-    parameters.push(UrlParam(pair[0], pair[1]));
+    parameters.push(new UrlParam(pair[0], pair[1]));
     parameters[pair[0]] = pair[1];
   }
   return parameters;
@@ -28,6 +28,22 @@ function assembleUrlParameters(params) {
   return params && params.length
       ? `?${params.join('&')}`
       : '';
+}
+
+/**
+ * Compares two parsed URL parameter tables. Returns true if they have the same values
+ * key/value pairs. Ignores order of parameters.
+ */
+function areParamsEqual(p1, p2) {
+  if (p1.length != p2.length) {
+    return false;
+  }
+  for (let i = 0; i < p1.length; i++) {
+    if (p2[p1[i].key].value != p1[i].value) {
+      return false;
+    }
+  }
+  return true;
 }
 
 
