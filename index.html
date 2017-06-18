@@ -1,111 +1,22 @@
+<!DOCTYPE html>
 <html>
-	<head>
-    <style rel="stylesheet" type="text/css">
-    html, body, .vid1, .vids2, .vids4 {
-      display: block;
-      position: relative;
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      font-size: 0;
-      background-color: #1B1B1B;
-    }
-    button {
-      font-size: 24px;
-      padding: 16px;
-      margin: 16px;
-    }
-    .vid {
-      display: block;
-      position: relative;
-      float: left;
-      margin: 0;
-      padding: 0;
-    }
-    .vid1 > .vid {
-      width: 100%;
-      height: 100%;
-    }
-    .vids2 > .vid {
-      width: 50%;
-      height: 100%;
-    }
-    .vids4 > .vid {
-      width: 50%;
-      height: 50%;
-    }
-    .vid > iframe {
-      display: block;
-      padding: 0;
-      margin: 0;
-      width: 100%;
-      height: 100%;
-    }
-    </style>
-    <script type="text/javascript">
-    
-    function destroyButtons() {
-      var buttons = document.getElementsByTagName('button');
-      while (buttons.length > 0)
-        buttons[0].parentNode.removeChild(buttons[0]);
-    }
-    
-    function oneVid() {
-      destroyButtons();
-      
-      document.getElementsByTagName('body')[0].className='vid1';
-      for (var i = 0; i < 1; i++)
-      {
-        document.getElementsByTagName('body')[0].innerHTML +=
-'<div class="vid">\
-  <form name="form'+i+'" onsubmit="return insertVid('+i+')" method="post">\
-    <input type="text" name="video" placeholder="Video ID" /><input type="submit" value="Go" />\
-  </form>\
-</div>';
-      }
-    }
-    function twoVids() {
-      destroyButtons();
-      
-      document.getElementsByTagName('body')[0].className='vids2';
-      for (var i = 0; i < 2; i++)
-      {
-        document.getElementsByTagName('body')[0].innerHTML +=
-'<div class="vid">\
-  <form name="form'+i+'" onsubmit="return insertVid('+i+')" method="post">\
-    <input type="text" name="video" placeholder="Video ID" /><input type="submit" value="Go" />\
-  </form>\
-</div>';
-      }
-    }
-    function fourVids() {
-      destroyButtons();
-      
-      document.getElementsByTagName('body')[0].className='vids4';
-      for (var i = 0; i < 4; i++)
-      {
-        document.getElementsByTagName('body')[0].innerHTML +=
-'<div class="vid">\
-  <form name="form'+i+'" onsubmit="return insertVid('+i+')" method="post">\
-    <input type="text" name="video" placeholder="Video ID" /><input type="submit" value="Go" />\
-  </form>\
-</div>';
-      }
-    }
-    
-    function insertVid(formId) {
-      form = document.forms["form"+formId];
-      document.getElementsByTagName('div')[formId].innerHTML = 
-        '<iframe src="http://www.youtube.com/embed/' + form['video'].value + '?rel=0" frameborder="0" allowfullscreen></iframe>';
-      return false;
-    }
-    
-    </script>
+  <head>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <script type="text/javascript" src="layouts.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript" src="VideoSelectionForm.js"></script>
+    <script type="text/javascript" src="YouTubeVideo.js"></script>
+    <script type="text/javascript" src="VideoFrame.js"></script>
+    <script type="text/javascript" src="VideoFrameManager.js"></script>
   </head>
   <body>
-    <button onclick="oneVid();">1 Video</button>
-    <button onclick="twoVids();">2 Videos</button>
-    <button onclick="fourVids();">4 Videos</button>
+    <div id="video-frame-container">
+      <div class="error-message">
+        <p>Sorry, this feature requires that JavaScript be enabled in order to run.</p>
+      </div>
+    </div>
+    <script type="text/javascript">
+      new VideoFrameManager('video-frame-container').init();
+    </script>
   </body>
 </html>
