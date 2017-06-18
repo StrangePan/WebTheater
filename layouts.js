@@ -1,8 +1,18 @@
-var LayoutType = {
-  FULLSCREEN: 0,
-  VERTICAL_SPLIT: 1,
-  FOUR_CORNERS : 2
+function LayoutType(value) {
+  switch (value) {
+    case LayoutType.FULLSCREEN:
+      return LayoutType.FULLSCREEN;
+    case LayoutType.VERTICAL_SPLIT:
+      return LayoutType.VERTICAL_SPLIT;
+    case LayoutType.FOUR_CORNERS:
+      return LayoutType.FOUR_CORNERS;
+    default:
+      return null;
+  }
 };
+LayoutType.FULLSCREEN = 0;
+LayoutType.VERTICAL_SPLIT = 1;
+LayoutType.FOUR_CORNERS = 2;
 
 /** Left edge, top edge, width of frame, and height of frame. [0-1] in percentages. */
 function frame(x, y, width, height) {

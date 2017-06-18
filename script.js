@@ -1,25 +1,35 @@
-var Param = {
-  LAYOUT_TYPE: 'l'
-};
-
-var urlParameters;
-
-function updateVideoLayout() {
-  var layoutType = urlParameters[Param.LAYOUT_TYPE];
-  loadLayout(VideoLayouts[layoutType]);
+/** Helper class for storing and serializing key/value pairs for URL params. */
+function UrlParam(key, value) {
+  this.key = key;
+  this.value = value;
 }
+
+/** Formats the key/value pair for writing to URL. */
+UrlParam.prototype.toString = function() {
+  return this.value
+      ? `${this.key}=${this.value}`
+      : `${this.key}`;
+};
 
 /** Static function that parses the URL parameters and returns the result as a key/value pair. */
 function parseUrlParameters() {
-  var urlParameters = [];
-  var query = window.location.search.substring(1);
-  var parameters = query.split("&");
-  for (var i = 0; i < parameters.length; i++) {
-    var pair = parameters[i].split("=");
-    urlParameters[pair[0]] = urlParameters[pair[1]];
+  let parameters = [];
+  let urlParameters = window.location.search.substring(1).split("&");
+  for (let i = 0; i < urlParameters.length; i++) {
+    let pair = urlParameters[i].split('=');
+    parameters.push(UrlParam(pair[0], pair[1]));
+    parameters[pair[0]] = pair[1];
   }
-  return urlParameters;
+  return parameters;
 }
+
+/** Create a string of URL parameters for the given array of key/value pairs. */
+function assembleUrlParameters(params) {
+  return params && params.length
+      ? `?${params.join('&')}`
+      : '';
+}
+
 
 /** Static function for removing all child elements from the given DOM element. */
 function clearElementContents(element) {

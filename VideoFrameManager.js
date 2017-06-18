@@ -1,21 +1,16 @@
 /** Class for coordinating, building, and manaing video frames. */
 function VideoFrameManager(containerId) {
   this.frameContainerId = containerId;
-  this.playerFrames = [];
+  this.layoutType = null;
+  this.frames = [];
 }
+
+VideoFrameManager.KEY_LAYOUT_TYPE = 'l';
+VideoFrameManager.KEY_PREFIX_FRAME = 'v';
 
 /** Initializes the video frame manager. */
 VideoFrameManager.prototype.init = function() {
-  this.showButtons();
-};
-
-/** Replaces the contents of the container with buttons for layout options. */
-VideoFrameManager.prototype.showButtons = function() {
-  setElementContents(
-    this.getContainer(),
-    this.createButtonForLayout(VideoLayouts[LayoutType.FULLSCREEN]),
-    this.createButtonForLayout(VideoLayouts[LayoutType.VERTICAL_SPLIT]),
-    this.createButtonForLayout(VideoLayouts[LayoutType.FOUR_CORNERS]));
+  this.showLayoutSelection();
 };
 
 /** Gets the DOM element that is the container for all of the video frames. */
@@ -23,49 +18,103 @@ VideoFrameManager.prototype.getContainer = function() {
   return this.frameContainer || (this.frameContainer = document.getElementById(this.frameContainerId));
 };
 
-/** Creates a button that can be clicked by the user to load the given layout. */
-VideoFrameManager.prototype.createButtonForLayout = function(layout) {
-  return new LayoutSelectionButton(layout.name, () => this.loadLayout(layout)).element;
+
+/** Replaces the contents of the container with buttons for layout options. */
+VideoFrameManager.prototype.showLayoutSelection = function() {
+  this.layoutType = null;
+  setElementContents(
+      this.getContainer(),
+      this.createLayoutSelectionButton(LayoutType.FULLSCREEN),
+      this.createLayoutSelectionButton(LayoutType.VERTICAL_SPLIT),
+      this.createLayoutSelectionButton(LayoutType.FOUR_CORNERS));
 };
 
-/** Update video frames to match the given layout. */
-VideoFrameManager.prototype.loadLayout = function(layout) {
-  clearElementContents(this.getContainer());
-  this.setNumberOfPlayerFrames(layout.frames.length);
-  for (let i = 0; i < layout.frames.length; i++) {
-    this.playerFrames[i].setLayout(layout.frames[i]);
-  }
-};
+/** Update video frames to match the given layout. Optional array of URL params. */
+VideoFrameManager.prototype.showLayout = function(layoutType, params) {
+  this.layoutType = layoutType;
+  let layout = VideoLayouts[layoutType];
 
-/** Create/destroy video frames until the number of frames match the given number. */
-VideoFrameManager.prototype.setNumberOfPlayerFrames = function(numPlayers) {
-  if (numPlayers < 0 || numPlayers > 10) {
-    return;
+  if (!this.frames.length) {
+    clearElementContents(this.getContainer());
   }
-  while (this.playerFrames.length < numPlayers) {
-    this.pushPlayerFrame();
-  }
-  while (this.playerFrames.length > numPlayers) {
-    this.popPlayerFrame();
+
+  for (let i = 0, imax = Math.max(this.frames.length, layout.frames.length); i < imax; i++) {
+    if (i >= this.frames.length) {
+      this.pushFrame(VideoFrameManager.prepareFrameUrlParams(i, params));
+      this.frames[i].setLayout(layout.frames[i]);
+   } else if (i >= layout.frames.length) {
+      // DO NOT REFERENCE CURRENT FRAMES HERE BECAUSE WE'RE POPPING FROM END!
+      this.popFrame();
+    } else {
+      this.frames[i].showContentFromUrlParams(VideoFrameManager.prepareFrameUrlParams(i, params));
+      this.frames[i].setLayout(layout.frames[i]);
+    }
   }
 };
 
 /** Create a new video player and add it to the DOM tree and the playerFrames array. */
-VideoFrameManager.prototype.pushPlayerFrame = function() {
-  let playerFrame = this.createPlayerFrame();
-  this.getContainer().appendChild(playerFrame.element);
-  this.playerFrames.push(playerFrame);
-  return playerFrame;
+VideoFrameManager.prototype.pushFrame = function(params) {
+  let frame = this.createFrame(this.frames.length, params);
+  this.getContainer().appendChild(frame.element);
+  this.frames.push(frame);
 };
 
 /** Remove the last video player from the DOM tree and the playerFrames array. */
-VideoFrameManager.prototype.popPlayerFrame = function() {
-  let playerFrame = this.playerFrames.pop();
+VideoFrameManager.prototype.popFrame = function() {
+  let playerFrame = this.frames.pop();
   this.getContainer().removeChild(playerFrame.element);
   return playerFrame;
 };
 
-/** Create a new video frame. */
-VideoFrameManager.prototype.createPlayerFrame = function() {
-  return new VideoFrame(this.playerFrames.lenth);
+
+/** Creates a button that can be clicked by the user to load the given layout. */
+VideoFrameManager.prototype.createLayoutSelectionButton = function(layoutType) {
+  return new LayoutSelectionButton(
+      VideoLayouts[layoutType].name,
+      () => this.showLayout(layoutType)).element;
 };
+
+/** Create a new video frame. */
+VideoFrameManager.prototype.createFrame = function(id, params) {
+  return new VideoFrame(id, params);
+};
+
+
+VideoFrameManager.prototype.showLayoutFromUrlParams = function(params) {
+  if (!params || !params.length) {
+    this.showLayoutSelection();
+  }
+  
+  let layoutType = LayoutType(params[VideoFrameManager.KEY_LAYOUT_TYPE]);
+  if (layoutType == null) {
+    this.showLayoutSelection();
+  } else {
+    this.showLayout(layoutType, params);
+  }
+};
+
+/** Create an array of parameters to write to the browser URL. */
+VideoFrameManager.prototype.buildUrlParams = function() {
+  let params = [];
+
+  if (this.layoutType == null) {
+    return params;
+  }
+  params.push(new UrlParam(VideoFrameManager.KEY_LAYOUT_TYPE, this.layoutType));
+
+  for (let i = 0; i < this.frames.length; i++) {
+    let frameParams = this.frames[i].buildUrlParams();
+    if (!frameParams || !frameParams.length) {
+      continue;
+    }
+    params.push(new UrlParam(`${VideoFrameManager.KEY_PREFIX_FRAME}${i}`, frameParams.join(',')));
+  }
+  
+  return params;
+}
+
+VideoFrameManager.prepareFrameUrlParams = function(frameId, params) {
+  let frameParams = params && params[`${VideoFrameManager.KEY_PREFIX_FRAME}${frameId}`];
+  return frameParams && frameParams.value.split(',');
+}
+
