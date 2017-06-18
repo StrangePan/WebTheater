@@ -16,8 +16,16 @@ VideoFrame.prototype.onFormSubmit = function(form) {
   this.showYouTubeVideo(form.video.value);
 };
 
-VideoFrame.prototype.showYouTubeVideo = function(videoId) {
-  setElementContents(this.element, new YouTubeVideo(videoId).element);
+/**
+ * Tries to show an embedded YouTube video in the frame to the video identified by the string.
+ * Returns the video element created if successful and null if not.
+ */
+VideoFrame.prototype.showYouTubeVideo = function(videoString) {
+  let video = YouTubeVideo.createFromString(videoString);
+  if (video) {
+    setElementContents(this.element, video.element);
+  }
+  return video;
 }
 
 /** Sets this frame's properties based on the properties of the given layout object. */
