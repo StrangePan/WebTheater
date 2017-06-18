@@ -25,10 +25,7 @@ VideoFrameManager.prototype.getContainer = function() {
 
 /** Creates a button that can be clicked by the user to load the given layout. */
 VideoFrameManager.prototype.createButtonForLayout = function(layout) {
-  let button = document.createElement('button');
-  button.textContent = layout.name;
-  button.onclick = () => this.loadLayout(layout);
-  return button;
+  return new LayoutSelectionButton(layout.name, () => this.loadLayout(layout)).element;
 };
 
 /** Update video frames to match the given layout. */
