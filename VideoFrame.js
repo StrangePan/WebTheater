@@ -1,11 +1,9 @@
 function VideoFrame(id) {
-  this.id = id;
-  
   let frame = document.createElement('div');
   frame.classList.add('video-frame');
   
   this.element = frame;
-  
+  this.id = id;
   this.showContentSelection();
 }
 
@@ -19,12 +17,7 @@ VideoFrame.prototype.onFormSubmit = function(form) {
 };
 
 VideoFrame.prototype.showYouTubeVideo = function(videoId) {
-  let iframe = document.createElement('iframe');
-  iframe.src = 'http://www.youtube.com/embed/' + videoId + '?rel=0';
-  iframe.frameBorder = '0';
-  iframe.setAttribute('allowfullscreen', '');
-
-  setElementContents(this.element, iframe);
+  setElementContents(this.element, new YouTubeVideo(videoId).element);
 }
 
 /** Sets this frame's properties based on the properties of the given layout object. */
