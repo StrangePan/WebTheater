@@ -7,7 +7,9 @@
     <script type="text/javascript" src="VideoSelectionForm.js"></script>
     <script type="text/javascript" src="YouTubeVideo.js"></script>
     <script type="text/javascript" src="VideoFrame.js"></script>
+    <script type="text/javascript" src="LayoutSelectionButton.js"></script>
     <script type="text/javascript" src="VideoFrameManager.js"></script>
+    <script type="text/javascript" src="UrlManager.js"></script>
   </head>
   <body>
     <div id="video-frame-container">
@@ -16,7 +18,7 @@
       </div>
     </div>
     <script type="text/javascript">
-      new VideoFrameManager('video-frame-container').init();
+      new UrlManager(new VideoFrameManager('video-frame-container'));
     </script>
   </body>
 </html>
