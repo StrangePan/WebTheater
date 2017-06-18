@@ -3,35 +3,15 @@ function VideoFrameManager(containerId) {
   this.frameContainerId = containerId;
   this.layoutType = null;
   this.frames = [];
+  this._onPreStateChange = () => this.onPreStateChange && this.onPreStateChange();
+  this._onStateChange = () => this.onStateChange && this.onStateChange();
 }
 
 VideoFrameManager.KEY_LAYOUT_TYPE = 'l';
 VideoFrameManager.KEY_PREFIX_FRAME = 'v';
 
 /** Initializes the video frame manager. */
-VideoFrameManager.prototype.init = function() {
-  window.addEventListener('popstate', e => {
-    this.stateStack++;
-    var params = e.state;
-    if (params) {
-      this.showLayoutFromUrlParams(params);
-    } else {
-      this.showLayoutInUrl();
-    }
-    this.stateStack--;
-  });
-  this.stateStack = 1;
-  this.onPreStateChange = () => this.stateStack++;
-  this.onStateChange = () => {
-    this.stateStack--;
-    if (this.stateStack == 0) {
-      this.pushStateToHistory();
-    }
-  }
-
-  this.showLayoutInUrl();
-  this.stateStack = 0;
-};
+VideoFrameManager.prototype.init = function() {};
 
 /** Gets the DOM element that is the container for all of the video frames. */
 VideoFrameManager.prototype.getContainer = function() {
@@ -41,9 +21,7 @@ VideoFrameManager.prototype.getContainer = function() {
 
 /** Replaces the contents of the container with buttons for layout options. */
 VideoFrameManager.prototype.showLayoutSelection = function() {
-  if (this.onPreStateChange) {
-    this.onPreStateChange();
-  }
+  this._onPreStateChange();
   this.layoutType = null;
   while (this.frames.length) {
     this.popFrame();
@@ -53,16 +31,12 @@ VideoFrameManager.prototype.showLayoutSelection = function() {
       this.createLayoutSelectionButton(LayoutType.FULLSCREEN),
       this.createLayoutSelectionButton(LayoutType.VERTICAL_SPLIT),
       this.createLayoutSelectionButton(LayoutType.FOUR_CORNERS));
-  if (this.onStateChange) {
-    this.onStateChange();
-  }
+  this._onStateChange();
 };
 
 /** Update video frames to match the given layout. Optional array of URL params. */
 VideoFrameManager.prototype.showLayout = function(layoutType, params) {
-  if (this.onPreStateChange) {
-    this.onPreStateChange();
-  }
+  this._onPreStateChange();
   this.layoutType = layoutType;
   let layout = VideoLayouts[layoutType];
 
@@ -82,17 +56,15 @@ VideoFrameManager.prototype.showLayout = function(layoutType, params) {
       this.frames[i].setLayout(layout.frames[i]);
     }
   }
-  if (this.onStateChange) {
-    this.onStateChange();
-  }
+  this._onStateChange();
 };
 
 /** Create a new video player and add it to the DOM tree and the playerFrames array. */
 VideoFrameManager.prototype.pushFrame = function(params) {
   let frame = this.createFrame(this.frames.length, params);
   this.getContainer().appendChild(frame.element);
-  frame.onPreStateChange = this.onPreStateChange;
-  frame.onStateChange = this.onStateChange;
+  frame.onPreStateChange = this._onPreStateChange;
+  frame.onStateChange = this._onStateChange;
   this.frames.push(frame);
 };
 
@@ -119,10 +91,6 @@ VideoFrameManager.prototype.createFrame = function(id, params) {
 };
 
 
-VideoFrameManager.prototype.showLayoutInUrl = function() {
-  this.showLayoutFromUrlParams(parseUrlParameters(window.location.search.substr(1)));
-};
-
 /**
  * Attempts to show the layout defined by the given params. Shows the layout selection
  * If unable to use the given params.
@@ -138,24 +106,6 @@ VideoFrameManager.prototype.showLayoutFromUrlParams = function(params) {
   } else {
     this.showLayout(layoutType, params);
   }
-};
-
-/**
- * Build URL params for the current state and push to the browser's history.
- * Returns true on success or false if nothing was pushed to the browser history.
- */
-VideoFrameManager.prototype.pushStateToHistory = function() {
-  let curParams = parseUrlParameters(window.location.search.substr(1));
-  let newParams = this.buildUrlParams();
-  if (areParamsEqual(curParams, newParams)) {
-    return false;
-  }
-  let newUrl = assembleUrlParameters(newParams);
-  if (window.location.search.length > 0) {
-    newUrl = window.location.href.replace(window.location.search, newUrl);
-  }
-  history.pushState(newParams, null, newUrl);
-  return true;
 };
 
 /** Create an array of parameters to write to the browser URL. */
