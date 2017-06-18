@@ -1,3 +1,4 @@
+/** Class for managing the contents of a frame. */
 function VideoFrame(id) {
   let frame = document.createElement('div');
   frame.classList.add('video-frame');
@@ -9,12 +10,14 @@ function VideoFrame(id) {
 
 /** Show this frame's content selector to the user. */
 VideoFrame.prototype.showContentSelection = function() {
-  setElementContents(this.element, new VideoSelectionForm(this.id, form => this.onFormSubmit(form)).element);
+  setElementContents(
+    this.element,
+    new VideoSelectionForm(this.id, form => this.showVideoFromUrl(form.video.value)).element);
 };
 
-VideoFrame.prototype.onFormSubmit = function(form) {
-  this.showYouTubeVideo(form.video.value);
-};
+VideoFrame.prototype.showVideoFromUrl = function(videoUrl) {
+  this.showYouTubeVideo(videoUrl);
+}
 
 /**
  * Tries to show an embedded YouTube video in the frame to the video identified by the string.
