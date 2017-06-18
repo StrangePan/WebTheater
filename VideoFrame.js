@@ -14,6 +14,9 @@ VideoFrame.VIDEO_TYPE_YOUTUBE = 'yt';
 
 /** Show this frame's content selector to the user. */
 VideoFrame.prototype.showContentSelection = function() {
+  if (this.content instanceof VideoSelectionForm) {
+    return;
+  }
   this.setContent(
       new VideoSelectionForm(
           this.id,
@@ -26,15 +29,28 @@ VideoFrame.prototype.showContentFromUserInput = function(userInput) {
 };
 
 /**
- * Tries to show an embedded YouTube video in the frame using the given user input string.
- * Returns true on success, false on failure.
+ * Tries to show an embedded YouTube video in the frame using the given input. Accepts either
+ * a user input string or a URL parameter array. Returns true on success, false on failure.
  */
-VideoFrame.prototype.showYouTubeVideo = function(inputString) {
-  let video = YouTubeVideo.createFromString(inputString);
-  if (video) {
-    this.setContent(video);
+VideoFrame.prototype.showYouTubeVideo = function(input) {
+  let newContent = null;
+
+  if (typeof input == 'string') {
+    if (this.content instanceof YouTubeVideo && this.content.matchesInputString(input)) {
+      return true;
+    }
+    newContent = YouTubeVideo.createFromInputString(input);
+  } else if (typeof input == 'object') {
+    if (this.content instanceof YouTubeVideo && this.content.matchesUrlParams(input)) {
+      return true;
+    }
+    newContent = YouTubeVideo.createFromUrlParams(input);
   }
-  return Boolean(video);
+
+  if (newContent) {
+    this.setContent(newContent);
+  }
+  return Boolean(newContent);
 };
 
 
@@ -43,10 +59,9 @@ VideoFrame.prototype.showYouTubeVideo = function(inputString) {
  * Returns a non-null array that may be empty.
  */
 VideoFrame.prototype.buildUrlParams = function() {
-  if (this.content instanceof YouTubeVideo) {
-    return [VideoFrame.VIDEO_TYPE_YOUTUBE, ...this.content.buildUrlParams()];
-  }
-  return [];
+  return this.content instanceof YouTubeVideo
+      ? [VideoFrame.VIDEO_TYPE_YOUTUBE, ...this.content.buildUrlParams()]
+      : [];
 };
 
 /**
@@ -59,15 +74,13 @@ VideoFrame.prototype.showContentFromUrlParams = function(params) {
 
   switch (videoType) {
     case VideoFrame.VIDEO_TYPE_YOUTUBE:
-      video = YouTubeVideo.createFromUrlParams(params.splice(1));
+      if (this.showYouTubeVideo(params.splice(1))) {
+        return;
+      }
       break;
   }
 
-  if (video) {
-    this.setContent(video);
-  } else {
-    this.showContentSelection();
-  }
+  this.showContentSelection();
 };
 
 

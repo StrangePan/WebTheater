@@ -20,7 +20,9 @@ const _YT_RES_MATCHER = new RegExp(`^${_YT_VID_ID_PL_ID}$`);
 /** Class for building and controlling a embedded YouTube video. */
 function YouTubeVideo(videoId, playlistId) {
   this.videoId = videoId;
-  this.playlistId = playlistId;
+  if (typeof playlistId == 'string') {
+    this.playlistId = playlistId;
+  }
   
   let iframe = document.createElement('iframe');
   iframe.src = `https://www.youtube.com/embed/${videoId}${playlistId ? '?list=' + playlistId : ''}`;
@@ -30,6 +32,7 @@ function YouTubeVideo(videoId, playlistId) {
   this.element = iframe;
 }
 
+
 /**
  * Attempts to create a new instance using the given input. Expects input to be one of:
  * - YouTube video URL
@@ -37,11 +40,35 @@ function YouTubeVideo(videoId, playlistId) {
  *
  * Returns a new YouTubeVideo instance if the given input is supported or null if not.
  */
-YouTubeVideo.createFromString = function(input) {
-  let videoId = _YT_URL_MATCHER.exec(input) || _YT_RES_MATCHER.exec(input);
-  return videoId && new YouTubeVideo(videoId[1], videoId[2]);
+YouTubeVideo.createFromInputString = function(input) {
+  let extracts = YouTubeVideo.parseInputString(input);
+  return extracts && new YouTubeVideo(extracts.videoId, extracts.playlistId);
 };
 
+/** Extracts video ID and playlist ID from input user string. Returns null on fail. */
+YouTubeVideo.parseInputString = function(input) {
+  let capturedData = _YT_URL_MATCHER.exec(input) || _YT_RES_MATCHER.exec(input);
+  return capturedData && {
+    videoId: capturedData[1],
+    playlistId: capturedData[2]
+  };
+};
+
+/** Returns boolean value indicating whether or not the player matches the given input string. */
+YouTubeVideo.prototype.matchesInputString = function(input) {
+  let extracts = YouTubeVideo.parseInputString(input);
+  return extracts
+      ? extracts.videoId == this.videoId && extracts.playlistId == this.playlistId
+      : false;
+};
+
+
+/** Attempts to create a new instance using the given input params. Returns null if unable. */
+YouTubeVideo.createFromUrlParams = function(params) {
+  let videoId = params && _YT_VID_ID_MATCHER.test(params[0]) && params[0];
+  let playlistId = params && _YT_PL_ID_MATCHER.test(params[1]) && params[1];
+  return videoId && new YouTubeVideo(videoId, playlistId);
+};
 
 /**
  * Create an array of parameters to write to the browser URL for use when restoring state.
@@ -53,11 +80,9 @@ YouTubeVideo.prototype.buildUrlParams = function() {
     params.push(this.playlistId);
   }
   return params;
-}
+};
 
-/** Attempts to create a new instance using the given input params. Returns null if unable. */
-YouTubeVideo.createFromUrlParams = function(params) {
-  let videoId = params && _YT_VID_ID_MATCHER.test(params[0]) && params[0];
-  let playlistId = params && _YT_PL_ID_MATCHER.test(params[1]) && params[1];
-  return videoId && new YouTubeVideo(videoId, playlistId);
+/** Returns boolean value indicating whether or not the palyer matches the given URL params. */
+YouTubeVideo.prototype.matchesUrlParams = function(params) {
+  return params && params[0] == this.videoId && params[1] == this.playlistId;
 };
