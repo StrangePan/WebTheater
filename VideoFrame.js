@@ -6,6 +6,7 @@ function VideoFrame(id, params) {
   this.element = frame;
   this.id = id;
   this.content = null;
+  this.onPreStateChange = null;
   this.onStateChange = null;
   this.showContentFromUrlParams(params);
 }
@@ -86,8 +87,12 @@ VideoFrame.prototype.showContentFromUrlParams = function(params) {
 
 /** Set the content of this frame to the given content controller. Updates the DOM tree. */
 VideoFrame.prototype.setContent = function(content) {
+  if (this.onPreStateChange) {
+    this.onPreStateChange();
+  }
   this.content = content;
   setElementContents(this.element, content.element);
+  content.onPreStateChange = this.onPreStateChange;
   content.onStateChange = this.onStateChange;
   if (this.onStateChange) {
     this.onStateChange();

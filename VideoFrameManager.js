@@ -11,16 +11,26 @@ VideoFrameManager.KEY_PREFIX_FRAME = 'v';
 /** Initializes the video frame manager. */
 VideoFrameManager.prototype.init = function() {
   window.addEventListener('popstate', e => {
+    this.stateStack++;
     var params = e.state;
     if (params) {
       this.showLayoutFromUrlParams(params);
     } else {
       this.showLayoutInUrl();
     }
+    this.stateStack--;
   });
-  this.onStateChange = () => this.pushStateToHistory();
+  this.stateStack = 1;
+  this.onPreStateChange = () => this.stateStack++;
+  this.onStateChange = () => {
+    this.stateStack--;
+    if (this.stateStack == 0) {
+      this.pushStateToHistory();
+    }
+  }
 
   this.showLayoutInUrl();
+  this.stateStack = 0;
 };
 
 /** Gets the DOM element that is the container for all of the video frames. */
@@ -31,6 +41,9 @@ VideoFrameManager.prototype.getContainer = function() {
 
 /** Replaces the contents of the container with buttons for layout options. */
 VideoFrameManager.prototype.showLayoutSelection = function() {
+  if (this.onPreStateChange) {
+    this.onPreStateChange();
+  }
   this.layoutType = null;
   while (this.frames.length) {
     this.popFrame();
@@ -47,6 +60,9 @@ VideoFrameManager.prototype.showLayoutSelection = function() {
 
 /** Update video frames to match the given layout. Optional array of URL params. */
 VideoFrameManager.prototype.showLayout = function(layoutType, params) {
+  if (this.onPreStateChange) {
+    this.onPreStateChange();
+  }
   this.layoutType = layoutType;
   let layout = VideoLayouts[layoutType];
 
@@ -75,6 +91,7 @@ VideoFrameManager.prototype.showLayout = function(layoutType, params) {
 VideoFrameManager.prototype.pushFrame = function(params) {
   let frame = this.createFrame(this.frames.length, params);
   this.getContainer().appendChild(frame.element);
+  frame.onPreStateChange = this.onPreStateChange;
   frame.onStateChange = this.onStateChange;
   this.frames.push(frame);
 };
@@ -83,6 +100,7 @@ VideoFrameManager.prototype.pushFrame = function(params) {
 VideoFrameManager.prototype.popFrame = function() {
   let frame = this.frames.pop();
   frame.onStateChange = null;
+  frame.onPreStateChange = null;
   this.getContainer().removeChild(frame.element);
   return frame;
 };
