@@ -1,4 +1,7 @@
 function LayoutType(value) {
+  if (value == null) {
+    return null;
+  }
   switch (Number(value)) {
     case LayoutType.FULLSCREEN:
       return LayoutType.FULLSCREEN;

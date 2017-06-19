@@ -1,22 +1,18 @@
 /** Class for coordinating, building, and manaing video frames. */
-function VideoFrameManager(containerId) {
-  this.frameContainerId = containerId;
+function VideoFrameManager() {
   this.layoutType = null;
   this.frames = [];
   this._onPreStateChange = () => this.onPreStateChange && this.onPreStateChange();
   this._onStateChange = () => this.onStateChange && this.onStateChange();
+
+  let frameContainer = document.createElement('div');
+  frameContainer.classList.add('video-frame-container');
+
+  this.element = frameContainer;
 }
 
 VideoFrameManager.KEY_LAYOUT_TYPE = 'l';
 VideoFrameManager.KEY_PREFIX_FRAME = 'v';
-
-/** Initializes the video frame manager. */
-VideoFrameManager.prototype.init = function() {};
-
-/** Gets the DOM element that is the container for all of the video frames. */
-VideoFrameManager.prototype.getContainer = function() {
-  return this.frameContainer || (this.frameContainer = document.getElementById(this.frameContainerId));
-};
 
 
 /** Replaces the contents of the container with buttons for layout options. */
@@ -27,7 +23,7 @@ VideoFrameManager.prototype.showLayoutSelection = function() {
     this.popFrame();
   }
   setElementContents(
-      this.getContainer(),
+      this.element,
       this.createLayoutSelectionButton(LayoutType.FULLSCREEN),
       this.createLayoutSelectionButton(LayoutType.VERTICAL_SPLIT),
       this.createLayoutSelectionButton(LayoutType.FOUR_CORNERS));
@@ -36,23 +32,29 @@ VideoFrameManager.prototype.showLayoutSelection = function() {
 
 /** Update video frames to match the given layout. Optional array of URL params. */
 VideoFrameManager.prototype.showLayout = function(layoutType, params) {
+  if ((layoutType = LayoutType(layoutType)) == null) {
+    return;
+  }
+
   this._onPreStateChange();
   this.layoutType = layoutType;
   let layout = VideoLayouts[layoutType];
 
   if (!this.frames.length) {
-    clearElementContents(this.getContainer());
+    clearElementContents(this.element);
   }
 
   for (let i = 0, imax = Math.max(this.frames.length, layout.frames.length); i < imax; i++) {
-    if (i >= this.frames.length) {
-      this.pushFrame(VideoFrameManager.prepareFrameUrlParams(i, params));
-      this.frames[i].setLayout(layout.frames[i]);
-   } else if (i >= layout.frames.length) {
+    if (i >= layout.frames.length) {
       // DO NOT REFERENCE CURRENT FRAMES HERE BECAUSE WE'RE POPPING FROM END!
       this.popFrame();
+    } else if (i >= this.frames.length) {
+      this.pushFrame(VideoFrameManager.prepareFrameUrlParams(i, params));
+      this.frames[i].setLayout(layout.frames[i]);
     } else {
-      this.frames[i].showContentFromUrlParams(VideoFrameManager.prepareFrameUrlParams(i, params));
+      if (params) {
+        this.frames[i].showContentFromUrlParams(VideoFrameManager.prepareFrameUrlParams(i, params));
+      }
       this.frames[i].setLayout(layout.frames[i]);
     }
   }
@@ -62,7 +64,7 @@ VideoFrameManager.prototype.showLayout = function(layoutType, params) {
 /** Create a new video player and add it to the DOM tree and the playerFrames array. */
 VideoFrameManager.prototype.pushFrame = function(params) {
   let frame = this.createFrame(this.frames.length, params);
-  this.getContainer().appendChild(frame.element);
+  this.element.appendChild(frame.element);
   frame.onPreStateChange = this._onPreStateChange;
   frame.onStateChange = this._onStateChange;
   this.frames.push(frame);
@@ -73,7 +75,7 @@ VideoFrameManager.prototype.popFrame = function() {
   let frame = this.frames.pop();
   frame.onStateChange = null;
   frame.onPreStateChange = null;
-  this.getContainer().removeChild(frame.element);
+  this.element.removeChild(frame.element);
   return frame;
 };
 
@@ -132,8 +134,8 @@ VideoFrameManager.prototype.buildUrlParams = function() {
   return params;
 };
 
+/** Prepare string-formatted frame parameters for consumption by frames. */
 VideoFrameManager.prepareFrameUrlParams = function(frameId, params) {
   let frameParams = params && params[`${VideoFrameManager.KEY_PREFIX_FRAME}${frameId}`];
   return frameParams && frameParams.split(',');
 };
-
