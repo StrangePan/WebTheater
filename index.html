@@ -10,6 +10,7 @@
     <script type="text/javascript" src="LayoutSelectionButton.js"></script>
     <script type="text/javascript" src="VideoFrameManager.js"></script>
     <script type="text/javascript" src="UrlManager.js"></script>
+    <script type="text/javascript" src="Theater.js"></script>
   </head>
   <body>
     <div id="video-frame-container">
@@ -18,7 +19,7 @@
       </div>
     </div>
     <script type="text/javascript">
-      new UrlManager(new VideoFrameManager('video-frame-container'));
+      new Theater('video-frame-container');
     </script>
   </body>
 </html>

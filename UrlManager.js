@@ -18,7 +18,6 @@ UrlManager.prototype.onBrowserPopState = function(e) {
   this.stateStack++;
   var params = e.state;
   if (params) {
-    console.log('UrlManager.onBrowserPopState');
     this.frameManager.showLayoutFromUrlParams(params);
   } else {
     this.loadStateFromUrl();
@@ -44,7 +43,6 @@ UrlManager.prototype.onFrameManagerStateChange = function() {
  * Returns true on success or false if nothing was pushed to the browser history.
  */
 UrlManager.prototype.pushStateToHistory = function() {
-  console.log('UrlManager.pushStateToHistory');
   let curParams = parseUrlParameters(window.location.search.substr(1));
   let newParams = this.frameManager.buildUrlParams();
   if (areParamsEqual(curParams, newParams)) {
@@ -59,7 +57,6 @@ UrlManager.prototype.pushStateToHistory = function() {
 };
 
 UrlManager.prototype.loadStateFromUrl = function() {
-  console.log('UrlManager.loadStateFromUrl');
   this.stateStack++;
   this.frameManager.showLayoutFromUrlParams(
       parseUrlParameters(window.location.search.substr(1)));
