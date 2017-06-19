@@ -43,46 +43,63 @@
   display: inline-block;
   position: relative;
   padding: 16px 32px;
-  margin: 0 0 0 -50%;
+  margin: 0px 0px 0px -50%;
   background: rgb(72, 93, 225);
-  border-radius: 0 0 8px 8px;
+  border-radius: 0px 0px 8px 8px;
   visibility: visible;
-  box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.25)
+  box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.25);
+  transform: translateY(calc(0));
 }
-
 .theater-container .control-panel .layout-select-button-group {
   display: inline-block;
   margin: 0;
   padding: 0;
   font-size: 0;
 }
+
+
+
 .theater-container .control-panel .layout-select-button {
   display: inline-block;
-  margin: 0 16px 0 0;
+  position: relative;
+  margin: 0px 16px 0px 0px;
   padding: 8px;
+  top: 0px;
   width: 80px;
+  border-radius: 6px;
+}
+.theater-container .control-panel .layout-select-button .label {
+  display: block;
+  margin: 12px 0px 0px 0px;
+  padding: 0px;
+  height: 12px;
   color: white;
   font-size: 10px;
   text-align: center;
   text-transform: uppercase;
   font-weight: normal;
   font-family: Helvetica, Arial, sans-serif;
-  border-radius: 6px;
+  opacity: 1;
 }
 .theater-container .control-panel .layout-select-button:last-child {
-  margin-right: 0;
-}
-.theater-container .control-panel .layout-select-button:before {
-  content: "";
-  display: block;
-  width: 80px;
-  height: 80px;
-  margin-bottom: 12px;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
+  margin-right: 0px;
 }
 .theater-container .control-panel .layout-select-button:hover {
   background-color: rgba(255, 255, 255, 0.125);
+}
+
+.theater-container .control-panel .layout-select-button:before {
+  content: "";
+  display: block;
+  position: relative;
+  margin: 0px;
+  padding: 0px;
+  top: 0px;
+  z-index: 1;
+  width: 80px;
+  height: 80px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 .theater-container .control-panel .layout-select-button.layout-select-fullscreen:before {
   background-image: url(i_fullscreen.svg);
@@ -93,3 +110,50 @@
 .theater-container .control-panel .layout-select-button.layout-select-corners:before {
   background-image: url(i_corners.svg);
 }
+
+
+
+.theater-container .control-panel > div,
+.theater-container .control-panel .layout-select-button,
+.theater-container .control-panel .layout-select-button:before,
+.theater-container .control-panel .layout-select-button .label {
+  transition-duration: 0.25s;
+  transition-timing-function: linear;
+}
+.theater-container .control-panel > div {
+  transition-property: transform, box-shadow;
+}
+.theater-container .control-panel .layout-select-button {
+  transition-property: top;
+}
+.theater-container .control-panel .layout-select-button:before {
+  transition-property: top;
+}
+.theater-container .control-panel .layout-select-button .label {
+  transition-property: opacity;
+}
+
+.theater-container .control-panel.visibility-tuck > div {
+  transform: translateY(calc(-100%));
+  box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0);
+}
+.theater-container .control-panel.visibility-peek > div {
+  transform: translateY(calc(-100% + 32px));
+}
+.theater-container .control-panel.visibility-full > div {
+  transform: translateY(calc(0px));
+}
+.theater-container .control-panel.visibility-peek .layout-select-button,
+.theater-container .control-panel.visibility-tuck .layout-select-button {
+  top: 8px;
+}
+.theater-container .control-panel.visibility-peek .layout-select-button:before,
+.theater-container .control-panel.visibility-tuck .layout-select-button:before {
+  top: 24px;
+}
+.theater-container .control-panel.visibility-peek .layout-select-button .label,
+.theater-container .control-panel.visibility-tuck .layout-select-button .label {
+  opacity: 0;
+}
+
+
