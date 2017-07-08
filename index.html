@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" type="text/css" href="theater.css" />
     <link rel="stylesheet" type="text/css" href="styles.css" />
-    <script type="text/javascript" src="layouts.js"></script>
     <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript" src="layouts.js"></script>
     <script type="text/javascript" src="VideoSelectionForm.js"></script>
     <script type="text/javascript" src="YouTubeVideo.js"></script>
     <script type="text/javascript" src="VideoFrame.js"></script>
     <script type="text/javascript" src="LayoutSelectionButton.js"></script>
     <script type="text/javascript" src="VideoFrameManager.js"></script>
     <script type="text/javascript" src="UrlManager.js"></script>
+    <script type="text/javascript" src="ControlPanel.js"></script>
     <script type="text/javascript" src="Theater.js"></script>
   </head>
   <body>
-    <div id="video-frame-container">
+    <div id="main-theater" class="theater-container">
       <div class="error-message">
         <p>Sorry, this feature requires that JavaScript be enabled in order to run.</p>
+        <p>If you have JavaScript enabled, then your browser probably doesn't support the JavaScript
+        features this app uses.</p>
       </div>
     </div>
     <script type="text/javascript">
-      new Theater('video-frame-container');
+      new Theater('main-theater');
     </script>
   </body>
 </html>
