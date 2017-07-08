@@ -4,9 +4,6 @@ function ControlPanel(container, frameManager) {
 
   let wrapper = document.createElement('div');
   wrapper.classList.add('control-panel');
-  wrapper.addEventListener('')
-
-  let panel = document.createElement('div');
 
   let buttonGroup = document.createElement('ul');
   buttonGroup.classList.add('layout-select-button-group');
@@ -33,16 +30,10 @@ function ControlPanel(container, frameManager) {
     buttonGroup.appendChild(buttons[i]);
   }
   this.buttons = buttons;
-  panel.appendChild(buttonGroup);
-  wrapper.appendChild(panel);
+  wrapper.appendChild(buttonGroup);
 
   this.element = wrapper;
-  this.panel = panel;
   this.select(-1);
-  
-  container.addEventListener('mousemove', e => this.onMouseMove(e));
-  container.addEventListener('mouseleave', e => this.onMouseLeave(e));
-  this.setHoverState(2);
 }
 
 ControlPanel.prototype.select = function(buttonInd) {
@@ -58,47 +49,5 @@ ControlPanel.prototype.setSelected = function(button, selected) {
     button.classList.add('selected');
   } else {
     button.classList.remove('selected');
-  }
-};
-
-ControlPanel.prototype.onMouseMove = function(e) {
-  let distToCenter = Math.abs(e.currentTarget.offsetWidth / 2 - e.clientX);
-  let distToTop = Math.abs(e.clientY);
-  let distToHorEdge = distToCenter - this.panel.offsetWidth / 2;
-  let distToVerEdge = distToTop - this.panel.offsetHeight;
-
-  if (distToHorEdge <= 128 && distToVerEdge <= 0) {
-    this.setHoverState(0);
-  } else if (distToTop <= this.panel.offsetHeight * 2) {
-    this.setHoverState(1);
-  } else {
-    this.setHoverState(2);
-  }
-};
-
-ControlPanel.prototype.onMouseLeave = function(e) {
-  this.setHoverState(2);
-};
-
-ControlPanel.CLASS_VISIBILITY = [
-    'visibility-full',
-    'visibility-peek',
-    'visibility-tuck'
-];
-
-ControlPanel.prototype.setHoverState = function(state) {
-  if (state === this.hoverState
-      || typeof state != 'number'
-      || state < 0
-      || state >= ControlPanel.CLASS_VISIBILITY.length) {
-    return;
-  }
-  this.hoverState = state;
-  for (let i = 0; i < ControlPanel.CLASS_VISIBILITY.length; i++) {
-    if (i === state) {
-      this.element.classList.add(ControlPanel.CLASS_VISIBILITY[i]);
-    } else {
-      this.element.classList.remove(ControlPanel.CLASS_VISIBILITY[i]);
-    }
   }
 };

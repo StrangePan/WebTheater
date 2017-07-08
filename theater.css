@@ -1,12 +1,17 @@
+.theater-container {
+  position: relative;
+}
+
 .video-frame-container {
   display: block;
-  position: absolute;
+  position: fixed;
   margin: 0;
   padding: 0;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
+  z-index: 0;
 }
 
 .video-frame-container .video-frame {
@@ -30,25 +35,10 @@
 
 
 .theater-container .control-panel {
-  display: inline-block;
-  position: absolute;
-  padding: 0;
+  display: block;
+  padding: 0px 8px;
   margin: 0;
-  top: 0;
-  left: 50%;
-  z-index: 1;
-  visibility: hidden;
-}
-.theater-container .control-panel > div {
-  display: inline-block;
-  position: relative;
-  padding: 16px 32px;
-  margin: 0px 0px 0px -50%;
-  background: rgb(72, 93, 225);
-  border-radius: 0px 0px 8px 8px;
-  visibility: visible;
-  box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.25);
-  transform: translateY(calc(0));
+  background: rgb(72, 93, 255);
 }
 .theater-container .control-panel .layout-select-button-group {
   display: inline-block;
@@ -66,16 +56,14 @@
   padding: 8px;
   top: 0px;
   width: 80px;
-  border-radius: 6px;
 }
 .theater-container .control-panel .layout-select-button .label {
   display: block;
-  margin: 12px 0px 0px 0px;
+  margin: 6px 0px 0px 0px;
   padding: 0px;
-  height: 12px;
   color: white;
   font-size: 10px;
-  text-align: center;
+  text-align: left;
   text-transform: uppercase;
   font-weight: normal;
   font-family: Helvetica, Arial, sans-serif;
@@ -84,7 +72,8 @@
 .theater-container .control-panel .layout-select-button:last-child {
   margin-right: 0px;
 }
-.theater-container .control-panel .layout-select-button:hover {
+.theater-container .control-panel .layout-select-button:hover,
+.theater-container .control-panel .layout-select-button.selected {
   background-color: rgba(255, 255, 255, 0.125);
 }
 
@@ -96,8 +85,8 @@
   padding: 0px;
   top: 0px;
   z-index: 1;
-  width: 80px;
-  height: 80px;
+  width: 40px;
+  height: 40px;
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
@@ -110,50 +99,4 @@
 .theater-container .control-panel .layout-select-button.layout-select-corners:before {
   background-image: url(i_corners.svg);
 }
-
-
-
-.theater-container .control-panel > div,
-.theater-container .control-panel .layout-select-button,
-.theater-container .control-panel .layout-select-button:before,
-.theater-container .control-panel .layout-select-button .label {
-  transition-duration: 0.25s;
-  transition-timing-function: linear;
-}
-.theater-container .control-panel > div {
-  transition-property: transform, box-shadow;
-}
-.theater-container .control-panel .layout-select-button {
-  transition-property: top;
-}
-.theater-container .control-panel .layout-select-button:before {
-  transition-property: top;
-}
-.theater-container .control-panel .layout-select-button .label {
-  transition-property: opacity;
-}
-
-.theater-container .control-panel.visibility-tuck > div {
-  transform: translateY(calc(-100%));
-  box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0);
-}
-.theater-container .control-panel.visibility-peek > div {
-  transform: translateY(calc(-100% + 32px));
-}
-.theater-container .control-panel.visibility-full > div {
-  transform: translateY(calc(0px));
-}
-.theater-container .control-panel.visibility-peek .layout-select-button,
-.theater-container .control-panel.visibility-tuck .layout-select-button {
-  top: 8px;
-}
-.theater-container .control-panel.visibility-peek .layout-select-button:before,
-.theater-container .control-panel.visibility-tuck .layout-select-button:before {
-  top: 24px;
-}
-.theater-container .control-panel.visibility-peek .layout-select-button .label,
-.theater-container .control-panel.visibility-tuck .layout-select-button .label {
-  opacity: 0;
-}
-
 
