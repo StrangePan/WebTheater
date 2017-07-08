@@ -64,7 +64,7 @@ VideoFrameManager.prototype.showLayout = function(layoutType, params) {
 /** Create a new video player and add it to the DOM tree and the playerFrames array. */
 VideoFrameManager.prototype.pushFrame = function(params) {
   let frame = this.createFrame(this.frames.length, params);
-  this.element.appendChild(frame.element);
+  this.element.insertBefore(frame.element, this.element.firstChild);
   frame.onPreStateChange = this._onPreStateChange;
   frame.onStateChange = this._onStateChange;
   this.frames.push(frame);
