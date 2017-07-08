@@ -1,5 +1,6 @@
 .theater-container {
   position: relative;
+  background-color: #1B1B1B;
 }
 
 .video-frame-container {
@@ -23,7 +24,7 @@
   transition: top, right, bottom, left;
   transition-duration: .5s;
   transition-timing-function: cubic-bezier(.42,.18,.12,1);
-  background-color: #eee;
+  background-color: #1B1B1B;
 }
 .video-frame-container .video-frame > * {
   display: block;
