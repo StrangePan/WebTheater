@@ -3,6 +3,10 @@ function VideoFrame(id, params) {
   let frame = document.createElement('div');
   frame.classList.add('video-frame');
   
+  let overlay = document.createElement('div');
+  overlay.classList.add('overlay');
+  frame.appendChild(overlay);
+  
   this.element = frame;
   this.id = id;
   this.content = null;
@@ -11,6 +15,11 @@ function VideoFrame(id, params) {
 
   this.showContentFromUrlParams(params);
 }
+
+VideoFrame.STATE_ENTERING = 0;
+VideoFrame.STATE_VISIBLE = 1;
+VideoFrame.STATE_EXITING = 2;
+VideoFrame.STATE_GONE = 3;
 
 VideoFrame.VIDEO_TYPE_YOUTUBE = 'yt';
 
@@ -89,8 +98,11 @@ VideoFrame.prototype.showContentFromUrlParams = function(params) {
 /** Set the content of this frame to the given content controller. Updates the DOM tree. */
 VideoFrame.prototype.setContent = function(content) {
   this._onPreStateChange();
+  if (this.content) {
+    this.element.removeChild(this.content.element)
+  }
   this.content = content;
-  setElementContents(this.element, content.element);
+  this.element.appendChild(content.element);
   content.onPreStateChange = this._onPreStateChange;
   content.onStateChange = this._onStateChange;
   this._onStateChange();
@@ -102,4 +114,49 @@ VideoFrame.prototype.setLayout = function(layout) {
   this.element.style.right = layout.right;
   this.element.style.bottom = layout.bottom;
   this.element.style.left = layout.left;
+};
+
+VideoFrame.prototype.startEntering = function(callback) {
+  this.setState(VideoFrame.STATE_ENTERING);
+  let listener = () => {
+    this.element.removeEventListener('animationend', listener);
+    this.setState(VideoFrame.STATE_VISIBLE);
+    if (callback) {
+      callpack.apply(null, arguments);
+    }
+  };
+  this.element.addEventListener('animationend', listener);
+}
+
+VideoFrame.prototype.startRemoving = function(callback) {
+  this.setState(VideoFrame.STATE_EXITING);
+  let listener = () => {
+    this.element.removeEventListener('animationend', listener);
+    this.setState(VideoFrame.STATE_GONE);
+    if (callback) {
+      callback.apply(null, arguments);
+    }
+  };
+  this.element.addEventListener('animationend', listener);
+};
+
+VideoFrame.prototype.setState = function(state) {
+  this.element.classList.remove('entering');
+  this.element.classList.remove('visible');
+  this.element.classList.remove('exiting');
+  this.element.classList.remove('gone');
+  switch (state) {
+    case VideoFrame.STATE_ENTERING:
+      this.element.classList.add('entering');
+      break;
+    case VideoFrame.STATE_VISIBLE:
+      this.element.classList.add('visible');
+      break;
+    case VideoFrame.STATE_EXITING:
+      this.element.classList.add('exiting');
+      break;
+    case VideoFrame.STATE_GONE:
+      this.element.classList.add('gone');
+      break;
+  }
 };

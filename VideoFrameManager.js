@@ -67,6 +67,7 @@ VideoFrameManager.prototype.pushFrame = function(params) {
   this.element.insertBefore(frame.element, this.element.firstChild);
   frame.onPreStateChange = this._onPreStateChange;
   frame.onStateChange = this._onStateChange;
+  frame.startEntering();
   this.frames.push(frame);
 };
 
@@ -75,7 +76,9 @@ VideoFrameManager.prototype.popFrame = function() {
   let frame = this.frames.pop();
   frame.onStateChange = null;
   frame.onPreStateChange = null;
-  this.element.removeChild(frame.element);
+  frame.startRemoving(e => {
+    this.element.removeChild(frame.element);
+  });
   return frame;
 };
 

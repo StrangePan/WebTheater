@@ -23,6 +23,7 @@
   transition: top, right, bottom, left;
   transition-duration: .5s;
   transition-timing-function: cubic-bezier(.42,.18,.12,1);
+  background-color: #eee;
 }
 .video-frame-container .video-frame > * {
   display: block;
@@ -36,7 +37,7 @@
 
 .theater-container .control-panel {
   display: block;
-  padding: 0px 8px;
+  padding: 0px 16px;
   margin: 0;
   background: rgb(72, 93, 255);
 }
@@ -100,3 +101,65 @@
   background-image: url(i_corners.svg);
 }
 
+
+.video-frame-container .video-frame.entering,
+.video-frame-container .video-frame.exiting {
+  animation-duration: .5s;
+  animation-iteration-count: 1;
+}
+.video-frame-container .video-frame.entering {
+  animation-name: no-op-enter;
+}
+.video-frame-container .video-frame.exiting {
+  animation-name: no-op-exit;
+}
+@keyframes no-op-enter {
+  from {}
+  to {}
+}
+@keyframes no-op-exit {
+  from {}
+  to {}
+}
+
+
+.video-frame-container .video-frame > .overlay {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  background: black;
+  animation-delay: 0s;
+  animation-duration: .5s;
+  animation-timing-function: cubic-bezier(.42,.18,.12,1);
+  animation-fill-mode: both;
+  animation-iteration-count: 1;
+}
+.video-frame-container .video-frame.entering > .overlay {
+  animation-name: frame-overlay-enter;
+}
+.video-frame-container .video-frame.exiting > .overlay {
+  animation-name: frame-overlay-exit;
+}
+@keyframes frame-overlay-enter {
+  from {
+    opacity: 0.75;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes frame-overlay-exit {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.75;
+  }
+}
