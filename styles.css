@@ -1,0 +1,39 @@
+html, body {
+  color: #ffffff;
+  background-color: #1B1B1B;
+}
+::-webkit-scrollbar {
+  display: none;
+}
+html {
+  -ms-overflow-style: none;
+}
+#main-theater {
+  display: block;
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+#main-theater .video-frame-container {
+  display: block;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+}
+#main-theater .control-panel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  z-index: 1;
+}
+.theater-container .error-message {
+  text-align: center;
+}
