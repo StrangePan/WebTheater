@@ -151,6 +151,14 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
+.video-frame .video-selection-form .instructions {
+  margin: 2em 0px;
+  font-size: 16px;
+  font-family: Helvetica, Arial, sans-serif;
+}
+.video-frame .video-selection-form .instructions p {
+  text-align: center;
+}
 .video-frame .video-selection-form input {
   font-weight: normal;
   font-family: "Courier New", Courier, monospace, Helvetica, Arial, sans-serif;
@@ -159,7 +167,7 @@
 }
 .video-frame .video-selection-form input[type=text] {
   display: inline-block;
-  margin: 0px 8px 0px 0px;
+  margin: 0px 8px 0px 48px;
   padding: 9px 8px 7px;
   width: 16em;
   height: 16px;
