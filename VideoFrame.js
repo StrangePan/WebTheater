@@ -3,10 +3,6 @@ function VideoFrame(id, params) {
   let frame = document.createElement('div');
   frame.classList.add('video-frame');
   
-  let overlay = document.createElement('div');
-  overlay.classList.add('overlay');
-  frame.appendChild(overlay);
-  
   this.element = frame;
   this.id = id;
   this.content = null;
@@ -31,7 +27,7 @@ VideoFrame.prototype.showContentSelection = function() {
   this.setContent(
       new VideoSelectionForm(
           this.id,
-          form => this.showContentFromUserInput(form.video.value)));
+          inputString => this.showContentFromUserInput(inputString)));
 };
 
 /** Attempts to show the relevant content based on the user input. */
