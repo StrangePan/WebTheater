@@ -204,6 +204,7 @@
   background: url(go_arrow.svg);
   background-repeat: no-repeat;
   background-size: 100% 100%;
+  cursor: pointer;
 }
 .video-frame .video-selection-form input:focus,
 .video-frame .video-selection-form input:hover {
@@ -218,10 +219,10 @@
 .video-frame .video-selection-form .drop-overlay {
   display: block;
   position: absolute;
-  top: 16px;
-  right: 16px;
-  bottom: 16px;
-  left: 16px;
+  top: 5%;
+  right: 5%;
+  bottom: 5%;
+  left: 5%;
   border: 8px dashed rgb(72, 93, 255);
   border-radius: 16px;
   background: rgba(238, 238, 238, 0.5);

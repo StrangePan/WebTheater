@@ -22,7 +22,7 @@ function FloatyCircleBackground(concurrentCount) {
 
 
 FloatyCircleBackground.CIRCLE_DURATION = 20; // seconds
-FloatyCircleBackground.CIRCLE_INIT_SPACING = 0.25; // seconds
+FloatyCircleBackground.CIRCLE_INIT_SPACING = 0.125; // seconds
 FloatyCircleBackground.CIRCLE_COLORS = [
 //  '#f4f442',
   '#485dff',
