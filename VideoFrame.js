@@ -3,10 +3,6 @@ function VideoFrame(id, params) {
   let frame = document.createElement('div');
   frame.classList.add('video-frame');
   
-  let overlay = document.createElement('div');
-  overlay.classList.add('overlay');
-  frame.appendChild(overlay);
-  
   this.element = frame;
   this.id = id;
   this.content = null;
