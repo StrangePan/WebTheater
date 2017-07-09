@@ -7,12 +7,12 @@ function FloatyCircleBackground(concurrentCount) {
   this.background = background;
   this.element = background;
 
-  this.colorIndex = Math.floor(Math.random() * FloatyCircleBackground.CIRCLE_COLORS.length);
-  let intervalMs = FloatyCircleBackground.CIRCLE_DURATION * 1000 / concurrentCount;
+  this.colorIndex = Math.floor(Math.random() * _CIRCLE_COLORS.length);
+  let intervalMs = _CIRCLE_DURATION * 1000 / concurrentCount;
 
   for (let i = 0; i < concurrentCount; i++) {
-    let timeoutMs = i * FloatyCircleBackground.CIRCLE_INIT_SPACING * 1000;
-    let durationMs = FloatyCircleBackground.CIRCLE_DURATION * 1000
+    let timeoutMs = i * _CIRCLE_INIT_SPACING * 1000;
+    let durationMs = _CIRCLE_DURATION * 1000
         - (concurrentCount - i) * intervalMs
         - timeoutMs
         + 3000;
@@ -21,9 +21,9 @@ function FloatyCircleBackground(concurrentCount) {
 }
 
 
-FloatyCircleBackground.CIRCLE_DURATION = 20; // seconds
-FloatyCircleBackground.CIRCLE_INIT_SPACING = 0.125; // seconds
-FloatyCircleBackground.CIRCLE_COLORS = [
+const _CIRCLE_DURATION = 20; // seconds
+const _CIRCLE_INIT_SPACING = 0.125; // seconds
+const _CIRCLE_COLORS = [
 //  '#f4f442',
   '#485dff',
   '#41f44d',
@@ -34,8 +34,8 @@ FloatyCircleBackground.CIRCLE_COLORS = [
 
 
 FloatyCircleBackground.prototype.createCircle = function(durationOverride) {
-  this.colorIndex = (this.colorIndex + 1) % FloatyCircleBackground.CIRCLE_COLORS.length;
-  let fillColor = FloatyCircleBackground.CIRCLE_COLORS[this.colorIndex];
+  this.colorIndex = (this.colorIndex + 1) % _CIRCLE_COLORS.length;
+  let fillColor = _CIRCLE_COLORS[this.colorIndex];
   let element = document.createElement('div');
   element.classList.add('circle');
   element.style.transform = 'translate(-50%, -50%)';
@@ -47,10 +47,10 @@ FloatyCircleBackground.prototype.createCircle = function(durationOverride) {
   let animStart = new Date().getTime();
   let translateAngle = Math.random() * Math.PI * 2;
   let translateDist = 10 + Math.random() * 15;
-  let animDuration = FloatyCircleBackground.CIRCLE_DURATION * 1000;
+  let animDuration = _CIRCLE_DURATION * 1000;
   if (durationOverride) {
     animDuration = durationOverride;
-    translateDist *= durationOverride / (FloatyCircleBackground.CIRCLE_DURATION * 1000);
+    translateDist *= durationOverride / (_CIRCLE_DURATION * 1000);
   }
   let startTop = 10 + Math.random() * 80;
   let startLeft = 10 + Math.random() * 80;
