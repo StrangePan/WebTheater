@@ -8,13 +8,13 @@
 .video-frame-container {
   display: block;
   position: fixed;
-  margin: 0;
-  padding: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 0;
+  margin: 0px;
+  padding: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  z-index: 0px;
 }
 
 
@@ -24,14 +24,14 @@
 .theater-container .control-panel {
   display: block;
   padding: 0px 16px;
-  margin: 0;
+  margin: 0px;
   background: rgb(72, 93, 255);
 }
 .theater-container .control-panel .layout-select-button-group {
   display: inline-block;
-  margin: 0;
-  padding: 0;
-  font-size: 0;
+  margin: 0px;
+  padding: 0px;
+  font-size: 0px;
 }
 
 
@@ -94,9 +94,9 @@
 .video-frame-container .video-frame {
   display: block;
   position: absolute;
-  margin: 0;
-  padding: 0;
-  z-index: 0;
+  margin: 0px;
+  padding: 0px;
+  z-index: 0px;
   transition: top, right, bottom, left;
   transition-duration: .5s;
   transition-timing-function: cubic-bezier(.42,.18,.12,1);
@@ -104,8 +104,8 @@
 }
 .video-frame-container .video-frame > * {
   display: block;
-  padding: 0;
-  margin: 0;
+  padding: 0px;
+  margin: 0px;
   width: 100%;
   height: 100%;
 }
@@ -136,6 +136,46 @@
   to {
     filter: brightness(25%);
   }
+}
+
+
+
+/******************** VIDEO SELECTION FORM ********************/
+
+.video-frame .video-selection-form {
+  display: block;
+  position: absolute;
+  width: auto;
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.video-frame .video-selection-form input {
+  font-weight: normal;
+  font-family: "Courier New", Courier, monospace, Helvetica, Arial, sans-serif;
+}
+.video-frame .video-selection-form input[type=text] {
+  display: inline-block;
+  margin: 0px 8px 0px 0px;
+  padding: 9px 8px 7px;
+  width: 16em;
+  height: 16px;
+  font-size: 16px;
+  border: 4px solid rgb(72, 93, 255);
+  border-radius: 20px;
+}
+.video-frame .video-selection-form input[type=submit] {
+  display: inline-block;
+  margin: 0px;
+  padding: 0px;
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+  border: none;
+  background: url(go_arrow.svg);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 
 

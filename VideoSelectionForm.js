@@ -1,6 +1,7 @@
 function VideoSelectionForm(id, onSubmit) {
 
   let form = document.createElement('form');
+  form.classList.add('video-selection-form');
   form.name = 'form' + id;
   form.method = 'post';
   form.onsubmit = () => {
@@ -20,7 +21,7 @@ function VideoSelectionForm(id, onSubmit) {
 
   let submitInput = document.createElement('input');
   submitInput.type = 'submit';
-  submitInput.value = 'Go';
+  submitInput.value = ' ';
   form.appendChild(submitInput);
 
   this.element = form;
