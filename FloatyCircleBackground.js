@@ -6,7 +6,7 @@ function FloatyCircleBackground() {
   this.element = background;
 
   this.colorIndex = Math.floor(Math.random() * FloatyCircleBackground.circleColors.length);
-  setInterval(() => this.createCircle(), 3500);
+  setInterval(() => this.createCircle(), 1750);
 }
 
 

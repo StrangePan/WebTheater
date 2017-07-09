@@ -96,7 +96,7 @@ VideoFrameManager.prototype.showLayoutFromUrlParams = function(params) {
   }
 
   if (layoutType == null) {
-    layout = LayoutType(LayoutType.FULLSCREEN);
+    layoutType = LayoutType(LayoutType.FULLSCREEN);
   }
 
   this.showLayout(layoutType, params);
