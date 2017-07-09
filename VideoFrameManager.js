@@ -15,21 +15,6 @@ VideoFrameManager.KEY_LAYOUT_TYPE = 'l';
 VideoFrameManager.KEY_PREFIX_FRAME = 'v';
 
 
-/** Replaces the contents of the container with buttons for layout options. */
-VideoFrameManager.prototype.showLayoutSelection = function() {
-  this._onPreStateChange();
-  this.layoutType = null;
-  while (this.frames.length) {
-    this.popFrame();
-  }
-  setElementContents(
-      this.element,
-      this.createLayoutSelectionButton(LayoutType.FULLSCREEN),
-      this.createLayoutSelectionButton(LayoutType.VERTICAL_SPLIT),
-      this.createLayoutSelectionButton(LayoutType.FOUR_CORNERS));
-  this._onStateChange();
-};
-
 /** Update video frames to match the given layout. Optional array of URL params. */
 VideoFrameManager.prototype.showLayout = function(layoutType, params) {
   if ((layoutType = LayoutType(layoutType)) == null) {
@@ -39,10 +24,6 @@ VideoFrameManager.prototype.showLayout = function(layoutType, params) {
   this._onPreStateChange();
   this.layoutType = layoutType;
   let layout = VideoLayouts[layoutType];
-
-  if (!this.frames.length) {
-    clearElementContents(this.element);
-  }
 
   for (let i = 0, imax = Math.max(this.frames.length, layout.frames.length); i < imax; i++) {
     if (i >= layout.frames.length) {
@@ -64,7 +45,11 @@ VideoFrameManager.prototype.showLayout = function(layoutType, params) {
 /** Create a new video player and add it to the DOM tree and the playerFrames array. */
 VideoFrameManager.prototype.pushFrame = function(params) {
   let frame = this.createFrame(this.frames.length, params);
-  this.element.insertBefore(frame.element, this.element.firstChild);
+  if (this.frames.length === 0) {
+    this.element.appendChild(frame.element);
+  } else {
+    this.element.insertBefore(frame.element, this.frames[this.frames.length - 1].element);
+  }
   frame.onPreStateChange = this._onPreStateChange;
   frame.onStateChange = this._onStateChange;
   frame.startEntering();
@@ -101,16 +86,17 @@ VideoFrameManager.prototype.createFrame = function(id, params) {
  * If unable to use the given params.
  */
 VideoFrameManager.prototype.showLayoutFromUrlParams = function(params) {
-  if (!params || !params.length) {
-    this.showLayoutSelection();
+  let layoutType = null;
+
+  if (params && params.length) {
+    layoutType = LayoutType(params[VideoFrameManager.KEY_LAYOUT_TYPE]);
   }
-  
-  let layoutType = LayoutType(params[VideoFrameManager.KEY_LAYOUT_TYPE]);
+
   if (layoutType == null) {
-    this.showLayoutSelection();
-  } else {
-    this.showLayout(layoutType, params);
+    layout = LayoutType(LayoutType.FULLSCREEN);
   }
+
+  this.showLayout(layoutType, params);
 };
 
 /** Create an array of parameters to write to the browser URL. */

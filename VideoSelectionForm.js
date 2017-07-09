@@ -13,6 +13,7 @@ function VideoSelectionForm(id, onSubmit) {
     }
     return false;
   };
+
   form.addEventListener('drag', e => this.onDrag(e));
   form.addEventListener('dragstart', e => this.onDrag(e));
   form.addEventListener('dragover', e => this.onDragStart(e));
@@ -20,6 +21,9 @@ function VideoSelectionForm(id, onSubmit) {
   form.addEventListener('dragleave', e => this.onDragEnd(e));
   form.addEventListener('dragend', e => this.onDragEnd(e));
   form.addEventListener('drop', e => this.onDrop(e));
+
+    this.background = new FloatyCircleBackground();
+    form.appendChild(this.background.element);
 
     let manualWrapper = document.createElement('div');
     manualWrapper.classList.add('form-wrapper');

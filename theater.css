@@ -100,7 +100,6 @@
   transition: top, right, bottom, left;
   transition-duration: .5s;
   transition-timing-function: cubic-bezier(.42,.18,.12,1);
-  background-color: #1B1B1B;
 }
 .video-frame-container .video-frame > * {
   display: block;
@@ -167,6 +166,8 @@
 }
 .video-frame .video-selection-form .instructions p {
   text-align: center;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.375);
 }
 .video-frame .video-selection-form input {
   font-weight: normal;
@@ -253,4 +254,29 @@
   transform: translate(-50%, -50%);
 }
 
+
+
+/******************** ANIMATED BACKGROUND ********************/
+
+.theater-container .floaty-circle-background {
+  display: block;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  background-color: #f4f442;
+  overflow: hidden;
+  mix-blend-mode: multiply;
+}
+.theater-container .floaty-circle-background .circle {
+  display: block;
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  filter: blur(8px);
+}
+.theater-container .floaty-circle-background .circle > svg {
+  opacity: 0.625;
+}
 
