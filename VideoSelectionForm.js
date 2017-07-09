@@ -22,9 +22,6 @@ function VideoSelectionForm(id, onSubmit) {
   form.addEventListener('dragend', e => this.onDragEnd(e));
   form.addEventListener('drop', e => this.onDrop(e));
 
-    this.background = new FloatyCircleBackground();
-    form.appendChild(this.background.element);
-
     let manualWrapper = document.createElement('div');
     manualWrapper.classList.add('form-wrapper');
 
