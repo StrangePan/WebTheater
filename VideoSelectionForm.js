@@ -1,4 +1,5 @@
 function VideoSelectionForm(id, onSubmit) {
+  this.onSubmit = onSubmit;
 
   let form = document.createElement('form');
   form.classList.add('video-selection-form');
@@ -6,41 +7,91 @@ function VideoSelectionForm(id, onSubmit) {
   form.method = 'post';
   form.onsubmit = () => {
     try {
-      onSubmit(form);
+      onSubmit(form.video.value);
     } catch (error) {
       console.error(error.stack);
     }
     return false;
   };
+  form.addEventListener('drag', e => this.onDrag(e));
+  form.addEventListener('dragstart', e => this.onDrag(e));
+  form.addEventListener('dragover', e => this.onDragStart(e));
+  form.addEventListener('dragenter', e => this.onDragStart(e));
+  form.addEventListener('dragleave', e => this.onDragEnd(e));
+  form.addEventListener('dragend', e => this.onDragEnd(e));
+  form.addEventListener('drop', e => this.onDrop(e));
 
-  let leadingInstructions = document.createElement('div');
-  leadingInstructions.classList.add('instructions');
+    let manualWrapper = document.createElement('div');
+    manualWrapper.classList.add('manual-wrapper');
 
-  let p1 = document.createElement('p');
-  p1.textContent = 'Paste a video URL, then enjoy the show!';
-  leadingInstructions.appendChild(p1);
-  
-  form.appendChild(leadingInstructions);
+      let leadingInstructions = document.createElement('div');
+      leadingInstructions.classList.add('instructions');
 
-  let textInput = document.createElement('input');
-  textInput.type = 'text';
-  textInput.name = 'video';
-  textInput.placeholder = 'Video ID';
-  form.appendChild(textInput);
+        let p1 = document.createElement('p');
+        p1.textContent = 'Paste a video URL, then enjoy the show!';
+        leadingInstructions.appendChild(p1);
 
-  let submitInput = document.createElement('input');
-  submitInput.type = 'submit';
-  submitInput.value = ' ';
-  form.appendChild(submitInput);
-  
-  let followingInstructions = document.createElement('div');
-  followingInstructions.classList.add('instructions');
-  
-  let p2 = document.createElement('p');
-  p2.textContent = 'You can also drag and drop in a link.';
-  followingInstructions.appendChild(p2);
-  
-  form.appendChild(followingInstructions);
+      manualWrapper.appendChild(leadingInstructions);
+
+      let textInput = document.createElement('input');
+      textInput.type = 'text';
+      textInput.name = 'video';
+      textInput.placeholder = 'Video ID';
+      manualWrapper.appendChild(textInput);
+
+      let submitInput = document.createElement('input');
+      submitInput.type = 'submit';
+      submitInput.value = ' ';
+      manualWrapper.appendChild(submitInput);
+
+      let followingInstructions = document.createElement('div');
+      followingInstructions.classList.add('instructions');
+
+        let p2 = document.createElement('p');
+        p2.textContent = 'You can also drag and drop in a link.';
+        followingInstructions.appendChild(p2);
+
+      manualWrapper.appendChild(followingInstructions);
+
+    form.appendChild(manualWrapper);
+
+    let dragOverlay = document.createElement('div');
+    dragOverlay.classList.add('drag-overlay');
+    form.appendChild(dragOverlay);
 
   this.element = form;
 }
+
+VideoSelectionForm.prototype.onDrag = function(e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+VideoSelectionForm.prototype.onDragStart = function(e) {
+  this.onDrag(e);
+  this.element.classList.add('dragover');
+}
+
+VideoSelectionForm.prototype.onDragEnd = function(e) {
+  this.onDrag(e);
+  this.element.classList.remove('dragover');
+}
+
+VideoSelectionForm.prototype.onDrop = function(e) {
+  this.onDragEnd(e);
+  let items = e.dataTransfer.items;
+  if (items.length < 1) {
+    return;
+  }
+
+  let item = items[0];
+  if ((item.kind == 'string') && (item.type.match('^text/plain'))) {
+    // This item is the target node
+    item.getAsString(s => this.onSubmit(s));
+  } else if ((item.kind == 'string') && (item.type.match('^text/uri-list'))) {
+    // Drag data item is URI
+    item.getAsString(s => this.onSubmit(decodeURIComponent(s)));
+  }
+}
+
+
