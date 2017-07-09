@@ -1,27 +1,41 @@
-function FloatyCircleBackground() {
+function FloatyCircleBackground(concurrentCount) {
+  concurrentCount = concurrentCount || 10;
+  
   let background = document.createElement('div');
   background.classList.add('floaty-circle-background');
 
   this.background = background;
   this.element = background;
 
-  this.colorIndex = Math.floor(Math.random() * FloatyCircleBackground.circleColors.length);
-  setInterval(() => this.createCircle(), 1750);
+  this.colorIndex = Math.floor(Math.random() * FloatyCircleBackground.CIRCLE_COLORS.length);
+  let intervalMs = FloatyCircleBackground.CIRCLE_DURATION * 1000 / concurrentCount;
+
+  for (let i = 0; i < concurrentCount; i++) {
+    let timeoutMs = i * FloatyCircleBackground.CIRCLE_INIT_SPACING * 1000;
+    let durationMs = FloatyCircleBackground.CIRCLE_DURATION * 1000
+        - (concurrentCount - i) * intervalMs
+        - timeoutMs
+        + 3000;
+    setTimeout(() => this.createCircle(durationMs), timeoutMs);
+  }
 }
 
 
-FloatyCircleBackground.circleColors = [
-  '#485dff',
+FloatyCircleBackground.CIRCLE_DURATION = 20; // seconds
+FloatyCircleBackground.CIRCLE_INIT_SPACING = 0.25; // seconds
+FloatyCircleBackground.CIRCLE_COLORS = [
 //  '#f4f442',
+  '#485dff',
   '#41f44d',
   '#f441ee',
   '#f48541',
   '#41f4e5',
   '#f44141'];
 
-FloatyCircleBackground.prototype.createCircle = function() {
-  this.colorIndex = (this.colorIndex + 1) % FloatyCircleBackground.circleColors.length;
-  let fillColor = FloatyCircleBackground.circleColors[this.colorIndex];
+
+FloatyCircleBackground.prototype.createCircle = function(durationOverride) {
+  this.colorIndex = (this.colorIndex + 1) % FloatyCircleBackground.CIRCLE_COLORS.length;
+  let fillColor = FloatyCircleBackground.CIRCLE_COLORS[this.colorIndex];
   let element = document.createElement('div');
   element.classList.add('circle');
   element.style.transform = 'translate(-50%, -50%)';
@@ -30,10 +44,14 @@ FloatyCircleBackground.prototype.createCircle = function() {
       <defs id="defs2" /><metadata id="metadata5"><rdf:RDF><cc:Work rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata>
       <g transform="translate(0,-287)" id="layer1"><circle r="5" cy="292" cx="5" id="path4485" style="fill:${fillColor};fill-opacity:1;stroke:none;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none" /></g></svg>`;
 
+  let animStart = new Date().getTime();
   let translateAngle = Math.random() * Math.PI * 2;
   let translateDist = 10 + Math.random() * 15;
-  let animStart = new Date().getTime();
-  let animDuration = 20000;
+  let animDuration = FloatyCircleBackground.CIRCLE_DURATION * 1000;
+  if (durationOverride) {
+    animDuration = durationOverride;
+    translateDist *= durationOverride / (FloatyCircleBackground.CIRCLE_DURATION * 1000);
+  }
   let startTop = 10 + Math.random() * 80;
   let startLeft = 10 + Math.random() * 80;
   let deltaTop = Math.sin(translateAngle) * translateDist;
@@ -61,6 +79,7 @@ FloatyCircleBackground.prototype.createCircle = function() {
     if (animTime > animDuration) {
       clearInterval(motionInterval);
       this.background.removeChild(element);
+      this.createCircle();
     }
   }, 20);
 

@@ -8,7 +8,7 @@ function VideoFrameManager() {
   let frameContainer = document.createElement('div');
   frameContainer.classList.add('video-frame-container');
 
-    this.background = new FloatyCircleBackground();
+    this.background = new FloatyCircleBackground(15);
     frameContainer.appendChild(this.background.element);
 
   this.element = frameContainer;

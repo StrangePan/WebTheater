@@ -37,7 +37,7 @@ function VideoSelectionForm(id, onSubmit) {
       let textInput = document.createElement('input');
       textInput.type = 'text';
       textInput.name = 'video';
-      textInput.placeholder = 'Video ID';
+      textInput.placeholder = 'Video URL';
       manualWrapper.appendChild(textInput);
 
       let submitInput = document.createElement('input');

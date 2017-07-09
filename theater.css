@@ -273,7 +273,6 @@
   bottom: 0px;
   left: 0px;
   background-color: #f4f442;
-  mix-blend-mode: multiply;
 }
 .theater-container .floaty-circle-background .circle {
   display: block;
