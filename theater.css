@@ -179,7 +179,7 @@
 .video-frame .video-selection-form input {
   font-weight: normal;
   font-family: "Courier New", Courier, monospace, Helvetica, Arial, sans-serif;
-  box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 0.0);
+  box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 1);
   transition: box-shadow ease 0.5s;
 }
 .video-frame .video-selection-form input[type=text] {
@@ -208,7 +208,7 @@
 .video-frame .video-selection-form input:focus,
 .video-frame .video-selection-form input:hover {
   outline: none;
-  box-shadow: 0px 0px 8px 4px rgba(255, 255, 255, 0.5);
+  box-shadow: 0px 0px 0px 8px rgba(255, 255, 255, 1);
 }
 
 
