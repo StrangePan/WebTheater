@@ -22,13 +22,13 @@ function VideoSelectionForm(id, onSubmit) {
   form.addEventListener('drop', e => this.onDrop(e));
 
     let manualWrapper = document.createElement('div');
-    manualWrapper.classList.add('manual-wrapper');
+    manualWrapper.classList.add('form-wrapper');
 
       let leadingInstructions = document.createElement('div');
       leadingInstructions.classList.add('instructions');
 
         let p1 = document.createElement('p');
-        p1.textContent = 'Paste a video URL, then enjoy the show!';
+        p1.textContent = 'Paste or drop a video URL, then enjoy the show!';
         leadingInstructions.appendChild(p1);
 
       manualWrapper.appendChild(leadingInstructions);
@@ -44,20 +44,17 @@ function VideoSelectionForm(id, onSubmit) {
       submitInput.value = ' ';
       manualWrapper.appendChild(submitInput);
 
-      let followingInstructions = document.createElement('div');
-      followingInstructions.classList.add('instructions');
-
-        let p2 = document.createElement('p');
-        p2.textContent = 'You can also drag and drop in a link.';
-        followingInstructions.appendChild(p2);
-
-      manualWrapper.appendChild(followingInstructions);
-
     form.appendChild(manualWrapper);
 
-    let dragOverlay = document.createElement('div');
-    dragOverlay.classList.add('drag-overlay');
-    form.appendChild(dragOverlay);
+    let dropOverlay = document.createElement('div');
+    dropOverlay.classList.add('drop-overlay');
+
+      let dropImage = document.createElement('img');
+      dropImage.src = 'drop_arrow.svg';
+      dropImage.classList.add('drop-icon');
+      dropOverlay.appendChild(dropImage);
+
+    form.appendChild(dropOverlay);
 
   this.element = form;
 }
