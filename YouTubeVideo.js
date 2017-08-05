@@ -1,6 +1,6 @@
 const _YT_ID_CHAR = `a-zA-Z0-9_-`;
 const _YT_VID_ID = `[${_YT_ID_CHAR}]{11}`;
-const _YT_PL_ID = `[A-Z]{2}[${_YT_ID_CHAR}]{2,32}`;
+const _YT_PL_ID = `[A-Z]{2}[${_YT_ID_CHAR}]{2,32}|WL`;
 const _YT_VID_ID_PL_ID = `(${_YT_VID_ID})?(?:(?:/?\\?|&)list=(${_YT_PL_ID}))?`;
 const _YT_URL_PREFIX = `[/.](?:youtube\\.com/(?:watch/?\\?v=|embed/|playlist/?)|youtu\\.be/)`;
 
