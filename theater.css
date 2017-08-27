@@ -1,3 +1,5 @@
+/******************** WRAPPERS AND CONTAINERS ********************/
+
 .theater-container {
   position: relative;
   background-color: #1B1B1B;
@@ -6,47 +8,30 @@
 .video-frame-container {
   display: block;
   position: fixed;
-  margin: 0;
-  padding: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  margin: 0px;
+  padding: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
   z-index: 0;
 }
 
-.video-frame-container .video-frame {
-  display: block;
-  position: absolute;
-  margin: 0;
-  padding: 0;
-  z-index: 0;
-  transition: top, right, bottom, left;
-  transition-duration: .5s;
-  transition-timing-function: cubic-bezier(.42,.18,.12,1);
-  background-color: #1B1B1B;
-}
-.video-frame-container .video-frame > * {
-  display: block;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  height: 100%;
-}
 
 
+/******************** CONTROL PANEL ********************/
 
 .theater-container .control-panel {
   display: block;
   padding: 0px 16px;
-  margin: 0;
+  margin: 0px;
   background: rgb(72, 93, 255);
 }
 .theater-container .control-panel .layout-select-button-group {
   display: inline-block;
-  margin: 0;
-  padding: 0;
-  font-size: 0;
+  margin: 0px;
+  padding: 0px;
+  font-size: 0px;
 }
 
 
@@ -58,6 +43,8 @@
   padding: 8px;
   top: 0px;
   width: 80px;
+  cursor: pointer;
+  user-select: none;
 }
 .theater-container .control-panel .layout-select-button .label {
   display: block;
@@ -103,64 +90,200 @@
 }
 
 
+
+/******************** VIDEO FRAMES ********************/
+
+.video-frame-container .video-frame {
+  display: block;
+  position: absolute;
+  margin: 0px;
+  padding: 0px;
+  z-index: 0;
+  transition: top, right, bottom, left;
+  transition-duration: .5s;
+  transition-timing-function: cubic-bezier(.42,.18,.12,1);
+  animation-timing-function: cubic-bezier(.42,.18,.12,1);
+}
+.video-frame-container .video-frame > * {
+  display: block;
+  padding: 0px;
+  margin: 0px;
+  width: 100%;
+  height: 100%;
+}
+
 .video-frame-container .video-frame.entering,
 .video-frame-container .video-frame.exiting {
   animation-duration: .5s;
   animation-iteration-count: 1;
 }
 .video-frame-container .video-frame.entering {
-  animation-name: no-op-enter;
+  animation-name: frame-enter;
 }
 .video-frame-container .video-frame.exiting {
-  animation-name: no-op-exit;
+  animation-name: frame-exit;
 }
-@keyframes no-op-enter {
-  from {}
-  to {}
+@keyframes frame-enter {
+  from {
+    transform: scale(0.9);
+    filter: opacity(0.0);
+  }
+  to {
+    transform: scale(1.0);
+    filter: opacity(1.0);
+  }
 }
-@keyframes no-op-exit {
-  from {}
-  to {}
+@keyframes frame-exit {
+  from {
+    transform: scale(1.0);
+    filter: opacity(1.0);
+  }
+  to {
+    transform: scale(0.9);
+    filter: opacity(0.0);
+  }
 }
 
 
-.video-frame-container .video-frame > .overlay {
-  content: "";
+
+/******************** VIDEO SELECTION FORM ********************/
+
+.video-frame .video-selection-form {
   display: block;
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 1;
+}
+
+.video-frame .video-selection-form .form-wrapper {
+  display: block;
+  position: absolute;
+  width: auto;
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.video-frame .video-selection-form .instructions {
+  margin: 2em 0px;
+  font-size: 16px;
+  font-family: Helvetica, Arial, sans-serif;
+}
+.video-frame .video-selection-form .instructions p {
+  text-align: center;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.375);
+}
+.video-frame .video-selection-form input {
+  font-weight: normal;
+  font-family: "Courier New", Courier, monospace, Helvetica, Arial, sans-serif;
+  box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 1);
+  transition: box-shadow ease 0.5s;
+}
+.video-frame .video-selection-form input[type=text] {
+  display: inline-block;
+  margin: 0px 8px 0px 0px;
+  padding: 9px 8px 7px;
+  width: 16em;
+  height: 16px;
+  font-size: 16px;
+  border: 4px solid rgb(72, 93, 255);
+  border-radius: 20px;
+}
+.video-frame .video-selection-form input[type=submit] {
+  display: inline-block;
+  margin: 0px;
+  padding: 0px;
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+  border: none;
+  border-radius: 100%;
+  background: url(go_arrow.svg);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  cursor: pointer;
+}
+.video-frame .video-selection-form input:focus,
+.video-frame .video-selection-form input:hover {
+  outline: none;
+  box-shadow: 0px 0px 0px 8px rgba(255, 255, 255, 1);
+}
+
+
+
+/******************** VIDEO DROP FORM ********************/
+
+.video-frame .video-selection-form .drop-overlay {
+  display: block;
+  position: absolute;
+  top: 5%;
+  right: 5%;
+  bottom: 5%;
+  left: 5%;
+  border: 8px dashed rgb(72, 93, 255);
+  border-radius: 16px;
+  background: rgba(238, 238, 238, 0.5);
   pointer-events: none;
+}
+
+.video-frame .video-selection-form .drop-overlay,
+.video-frame .video-selection-form .form-wrapper {
+  transform-origin: 50% 50%;
+  transition-property: transform, opacity;
+  transition-timing-function: ease;
+  transition-duration: 0.25s;
+}
+.video-frame .video-selection-form:not(.dragover) .drop-overlay {
+  transform: scale(1.1, 1.1);
   opacity: 0;
-  background: black;
-  animation-delay: 0s;
-  animation-duration: .5s;
-  animation-timing-function: cubic-bezier(.42,.18,.12,1);
-  animation-fill-mode: both;
-  animation-iteration-count: 1;
 }
-.video-frame-container .video-frame.entering > .overlay {
-  animation-name: frame-overlay-enter;
+.video-frame .video-selection-form.dragover .drop-overlay {
+  transform: scale(1.0, 1.0);
+  opacity: 1;
 }
-.video-frame-container .video-frame.exiting > .overlay {
-  animation-name: frame-overlay-exit;
+.video-frame .video-selection-form:not(.dragover) .form-wrapper {
+  transform: translate(-50%, -50%) scale(1.0, 1.0);
+  opacity: 1;
 }
-@keyframes frame-overlay-enter {
-  from {
-    opacity: 0.75;
-  }
-  to {
-    opacity: 0;
-  }
+.video-frame .video-selection-form.dragover .form-wrapper {
+  transform: translate(-50%, -50%) scale(0.9, 0.9);
+  opacity: 0;
 }
-@keyframes frame-overlay-exit {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 0.75;
-  }
+.video-frame .video-selection-form .drop-overlay .drop-icon {
+  display: block;
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
+
+
+
+/******************** ANIMATED BACKGROUND ********************/
+
+.theater-container .floaty-circle-background {
+  display: block;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  background-color: #f4f442;
+}
+.theater-container .floaty-circle-background .circle {
+  display: block;
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  filter: blur(8px);
+}
+.theater-container .floaty-circle-background .circle > svg {
+  opacity: 0.625;
+}
+

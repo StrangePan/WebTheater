@@ -3,10 +3,6 @@ function VideoFrame(id, params) {
   let frame = document.createElement('div');
   frame.classList.add('video-frame');
   
-  let overlay = document.createElement('div');
-  overlay.classList.add('overlay');
-  frame.appendChild(overlay);
-  
   this.element = frame;
   this.id = id;
   this.content = null;
@@ -22,6 +18,7 @@ VideoFrame.STATE_EXITING = 2;
 VideoFrame.STATE_GONE = 3;
 
 VideoFrame.VIDEO_TYPE_YOUTUBE = 'yt';
+VideoFrame.VIDEO_TYPE_TWITCH = 'tw';
 
 /** Show this frame's content selector to the user. */
 VideoFrame.prototype.showContentSelection = function() {
@@ -31,12 +28,12 @@ VideoFrame.prototype.showContentSelection = function() {
   this.setContent(
       new VideoSelectionForm(
           this.id,
-          form => this.showContentFromUserInput(form.video.value)));
+          inputString => this.showContentFromUserInput(inputString)));
 };
 
 /** Attempts to show the relevant content based on the user input. */
 VideoFrame.prototype.showContentFromUserInput = function(userInput) {
-  this.showYouTubeVideo(userInput);
+  this.showYouTubeVideo(userInput) || this.showTwitchVideo(userInput);
 };
 
 /**
@@ -64,14 +61,41 @@ VideoFrame.prototype.showYouTubeVideo = function(input) {
   return Boolean(newContent);
 };
 
+VideoFrame.prototype.showTwitchVideo = function(input) {
+  let newContent = null;
+  
+  if (typeof input == 'string') {
+    if (this.content instanceof TwitchVideo && this.content.matchesInputString(input)) {
+      return true;
+    }
+    newContent = TwitchVideo.createFromInputString(input);
+  } else if (typeof input == 'object') {
+    if (this.content instanceof TwitchVideo && this.content.matchesUrlParams(input)) {
+      return true;
+    }
+    newContent = TwitchVideo.createFromUrlParams(input);
+  }
+  
+  if (newContent) {
+    this.setContent(newContent);
+  }
+  return Boolean(newContent);
+};
+
 
 /**
  * Create an array of parameters to write to the browser URL for use when restoring state.
  * Returns a non-null array that may be empty.
  */
 VideoFrame.prototype.buildUrlParams = function() {
-  return this.content instanceof YouTubeVideo
-      ? [VideoFrame.VIDEO_TYPE_YOUTUBE, ...this.content.buildUrlParams()]
+  let videoType;
+  if (this.content instanceof YouTubeVideo) {
+    videoType = VideoFrame.VIDEO_TYPE_YOUTUBE;
+  } else if (this.content instanceof TwitchVideo) {
+    videoType = VideoFrame.VIDEO_TYPE_TWITCH;
+  }
+  return videoType
+      ? [videoType, ...this.content.buildUrlParams()]
       : [];
 };
 
@@ -81,11 +105,15 @@ VideoFrame.prototype.buildUrlParams = function() {
  */
 VideoFrame.prototype.showContentFromUrlParams = function(params) {
   let videoType = params && params[0];
-  let video = null;
 
   switch (videoType) {
     case VideoFrame.VIDEO_TYPE_YOUTUBE:
       if (this.showYouTubeVideo(params.splice(1))) {
+        return;
+      }
+      break;
+    case VideoFrame.VIDEO_TYPE_TWITCH:
+      if (this.showTwitchVideo(params.splice(1))) {
         return;
       }
       break;

@@ -1,8 +1,8 @@
 const _YT_ID_CHAR = `a-zA-Z0-9_-`;
 const _YT_VID_ID = `[${_YT_ID_CHAR}]{11}`;
-const _YT_PL_ID = `[${_YT_ID_CHAR}]{13}`;
-const _YT_VID_ID_PL_ID = `(${_YT_VID_ID})(?:(?:/?\\?|&)list=(${_YT_PL_ID}))?`;
-const _YT_URL_PREFIX = `[/.](?:youtube\\.com/(?:watch/?\\?v=|embed/)|youtu\\.be/)`;
+const _YT_PL_ID = `[A-Z]{2}[${_YT_ID_CHAR}]{2,32}|WL`;
+const _YT_VID_ID_PL_ID = `(${_YT_VID_ID})?(?:(?:/?\\?|&)list=(${_YT_PL_ID}))?`;
+const _YT_URL_PREFIX = `[/.](?:youtube\\.com/(?:watch/?\\?v=|embed/|playlist/?)|youtu\\.be/)`;
 
 const _YT_VID_ID_MATCHER = new RegExp(`^(${_YT_VID_ID})$`);
 const _YT_PL_ID_MATCHER = new RegExp(`^(${_YT_PL_ID})$`);
@@ -48,7 +48,7 @@ YouTubeVideo.createFromInputString = function(input) {
 /** Extracts video ID and playlist ID from input user string. Returns null on fail. */
 YouTubeVideo.parseInputString = function(input) {
   let capturedData = _YT_URL_MATCHER.exec(input) || _YT_RES_MATCHER.exec(input);
-  return capturedData && {
+  return capturedData && (capturedData[1] || capturedData[2]) && {
     videoId: capturedData[1],
     playlistId: capturedData[2]
   };
@@ -67,7 +67,7 @@ YouTubeVideo.prototype.matchesInputString = function(input) {
 YouTubeVideo.createFromUrlParams = function(params) {
   let videoId = params && _YT_VID_ID_MATCHER.test(params[0]) && params[0];
   let playlistId = params && _YT_PL_ID_MATCHER.test(params[1]) && params[1];
-  return videoId && new YouTubeVideo(videoId, playlistId);
+  return (videoId || playlistId) && new YouTubeVideo(videoId, playlistId);
 };
 
 /**
